@@ -1,0 +1,33 @@
+import { NextRequest, NextResponse } from "next/server";
+import { verifyToken } from "@/lib/auth";
+
+export async function middleware(req: NextRequest) {
+  const token = req.cookies.get("token")?.value;
+  const authed = token ? !!(await verifyToken(token)) : false;
+
+  const path = req.nextUrl.pathname;
+  const isApiAuth = path.startsWith("/api/auth");
+  const isLoginPage = path === "/login" || path === "/register";
+  const isStatic =
+    path.startsWith("/_next") ||
+    path.startsWith("/favicon") ||
+    path.includes(".");
+
+  if (isStatic) {
+    return NextResponse.next();
+  }
+
+  if (!authed && !isApiAuth && !isLoginPage) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  if (authed && isLoginPage) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+};
