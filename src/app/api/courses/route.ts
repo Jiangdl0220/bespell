@@ -31,7 +31,7 @@ export async function GET() {
 
   // Get correct count for each course
   const withProgress = await Promise.all(
-    list.map(async (course) => {
+    list.map(async (course: { id: string; sentenceCount: number }) => {
       const stats = await db
         .select({
           completed: sql<number>`count(*)`,
