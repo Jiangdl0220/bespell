@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuid } from "uuid";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { users } from "@/db/schema";
 import { hashPassword } from "@/lib/password";
 import { createToken } from "@/lib/auth";
 import { eq } from "drizzle-orm";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,6 +24,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const db = getDb();
     const existing = await db
       .select()
       .from(users)
@@ -51,12 +54,13 @@ export async function POST(req: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
 
     return res;
-  } catch {
+  } catch (e) {
+    console.error(e);
     return NextResponse.json(
       { error: "注册失败，请稍后重试" },
       { status: 500 }

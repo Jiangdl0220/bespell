@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { users } from "@/db/schema";
 import { verifyPassword } from "@/lib/password";
 import { createToken } from "@/lib/auth";
 import { eq } from "drizzle-orm";
+
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,6 +18,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const db = getDb();
     const results = await db
       .select()
       .from(users)
@@ -55,7 +58,8 @@ export async function POST(req: NextRequest) {
     });
 
     return res;
-  } catch {
+  } catch (e) {
+    console.error(e);
     return NextResponse.json(
       { error: "登录失败，请稍后重试" },
       { status: 500 }

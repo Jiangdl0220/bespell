@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
+import { getDb } from "@/db";
 import { users } from "@/db/schema";
 import { getSessionUserId } from "@/lib/auth";
 import { eq } from "drizzle-orm";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const userId = await getSessionUserId();
@@ -10,6 +12,7 @@ export async function GET() {
     return NextResponse.json({ error: "未登录" }, { status: 401 });
   }
 
+  const db = getDb();
   const results = await db
     .select({
       id: users.id,
