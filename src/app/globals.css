@@ -9,10 +9,37 @@
   --color-amber-light: #f0d78c;
   --color-green: #4a9c5d;
   --color-red: #c94b3a;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-body: "Inter Tight", system-ui, -apple-system, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Input focus styles */
+input:focus {
+  outline: none;
+}
+
+/* Selection color */
+::selection {
+  background: var(--color-amber);
+  color: var(--color-cream);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 26, 0.15);
+  border-radius: 3px;
 }

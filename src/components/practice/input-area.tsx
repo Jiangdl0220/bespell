@@ -100,7 +100,15 @@ export default function InputArea({
       </div>
 
       {/* Input field */}
-      <div className="relative">
+      <motion.div
+        className="relative"
+        animate={
+          feedback === "error"
+            ? { x: [-6, 6, -4, 4, -2, 2, 0] }
+            : {}
+        }
+        transition={{ duration: 0.3 }}
+      >
         <input
           ref={inputRef}
           type="text"
@@ -141,7 +149,7 @@ export default function InputArea({
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
 
       {/* Hint bar */}
       <div className="flex items-center justify-between mt-3">
