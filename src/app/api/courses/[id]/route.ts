@@ -17,7 +17,7 @@ export async function GET(
   }
 
   const { id } = await params;
-  const db = getDb();
+  const db = await getDb();
   const results = await db
     .select()
     .from(courses)

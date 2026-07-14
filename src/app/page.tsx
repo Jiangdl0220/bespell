@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const userId = await getSessionUserId();
   if (!userId) return null;
-  const db = getDb();
+  const db = await getDb();
   const userResults = await db.select().from(users).where(eq(users.id, userId)).limit(1);
   const user = userResults[0];
 

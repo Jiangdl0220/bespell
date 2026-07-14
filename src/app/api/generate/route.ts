@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
 
     const sentences = allSentences;
 
-    const db = getDb();
+    const db = await getDb();
     const courseId = uuid();
     await db.insert(courses).values({
       id: courseId,

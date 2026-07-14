@@ -12,7 +12,7 @@ export async function GET() {
     return NextResponse.json({ error: "未登录" }, { status: 401 });
   }
 
-  const db = getDb();
+  const db = await getDb();
   const list = await db
     .select({
       id: courses.id,

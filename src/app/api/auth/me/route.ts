@@ -12,7 +12,7 @@ export async function GET() {
     return NextResponse.json({ error: "未登录" }, { status: 401 });
   }
 
-  const db = getDb();
+  const db = await getDb();
   const results = await db
     .select({
       id: users.id,

@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "缺少课程 ID" }, { status: 400 });
   }
 
-  const db = getDb();
+  const db = await getDb();
 
   // Upsert progress record
   const existing = await db

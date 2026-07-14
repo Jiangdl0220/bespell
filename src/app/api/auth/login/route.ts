@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const db = getDb();
+    const db = await getDb();
     const results = await db
       .select()
       .from(users)
