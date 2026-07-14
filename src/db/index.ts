@@ -14,11 +14,44 @@ export async function getDb(): Promise<any> {
 
   if (pgUrl) {
     const sql = neon(pgUrl);
+
+    // Auto-create tables on first connection
+    await sql`
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        username TEXT NOT NULL UNIQUE,
+        password_hash TEXT NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS courses (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id),
+        title TEXT NOT NULL,
+        scene TEXT NOT NULL,
+        difficulty TEXT NOT NULL,
+        sentences TEXT NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS progress (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id),
+        course_id TEXT NOT NULL REFERENCES courses(id),
+        sentence_index INTEGER NOT NULL,
+        attempts INTEGER NOT NULL DEFAULT 0,
+        correct INTEGER NOT NULL DEFAULT 0,
+        last_seen TIMESTAMP
+      )
+    `;
+    console.log("🔌 Using Neon Postgres (tables ready)");
+
     _db = drizzlePg(sql, { schema: pgSchema });
-    console.log("🔌 Using Neon Postgres");
-  } else if (process.env.VERCEL) {
+  } else if (process.env.VERCEL || process.env.EDGEONE_PAGES) {
     throw new Error(
-      "DATABASE_URL not configured. Add it in Vercel → Settings → Environment Variables."
+      "DATABASE_URL not configured. Add it in platform Settings → Environment Variables."
     );
   } else {
     // SQLite local dev — dynamic import to avoid native module on Vercel
