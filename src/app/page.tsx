@@ -21,12 +21,12 @@ export default async function HomePage() {
         <header className="flex items-center justify-between mb-10">
           <div>
             <h1 className="display text-3xl font-bold tracking-tight">BeSpell</h1>
-            <p className="text-xs opacity-20 mt-1">{user?.username}</p>
+            <p className="text-xs opacity-40 mt-1">{user?.username}</p>
           </div>
           <LogoutButton />
         </header>
         <Link href="/new" className="btn btn-primary w-full py-3.5 text-sm mb-8 tracking-wide">+ 新建课程</Link>
-        <h2 className="text-xs font-semibold opacity-20 uppercase tracking-[.15em] mb-4">我的课程</h2>
+        <h2 className="text-xs font-semibold opacity-40 uppercase tracking-[.15em] mb-4">我的课程</h2>
         <CourseList />
       </div>
     </div>

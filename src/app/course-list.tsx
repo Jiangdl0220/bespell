@@ -22,16 +22,16 @@ export default function CourseList() {
     <div className="space-y-3">
       {[1,2,3].map(i => (
         <div key={i} className="card p-5 animate-pulse">
-          <div className="h-4 w-40 bg-white/5 mb-3"/>
-          <div className="h-3 w-24 bg-white/5 mb-3"/>
-          <div className="h-1 w-full bg-white/5"/>
+          <div className="h-4 w-40 bg-white/10 mb-3"/>
+          <div className="h-3 w-24 bg-white/10 mb-3"/>
+          <div className="h-1 w-full bg-white/10"/>
         </div>
       ))}
     </div>
   );
 
   if (courses.length === 0) return (
-    <div className="text-center py-16"><p className="text-sm opacity-20">还没有课程</p></div>
+    <div className="text-center py-16"><p className="text-sm opacity-40">还没有课程</p></div>
   );
 
   return (

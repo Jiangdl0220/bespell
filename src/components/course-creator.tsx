@@ -53,7 +53,7 @@ export default function CourseCreator() {
         </div>
         <div className="space-y-8 anim-in">
           <div>
-            <label className="block text-xs font-semibold opacity-20 uppercase tracking-[.15em] mb-3">对话场景</label>
+            <label className="block text-xs font-semibold opacity-40 uppercase tracking-[.15em] mb-3">对话场景</label>
             <div className="grid grid-cols-4 gap-2">
               {SCENE_PRESETS.map(s=>(
                 <button key={s} onClick={()=>setScene(s)}
@@ -82,7 +82,7 @@ export default function CourseCreator() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold opacity-20 uppercase tracking-[.15em] mb-3">难度等级</label>
+            <label className="block text-xs font-semibold opacity-40 uppercase tracking-[.15em] mb-3">难度等级</label>
             <div className="flex gap-2">
               {DIFFICULTY_LEVELS.map(d=>(
                 <SelBtn key={d} selected={diff===d} onClick={()=>setDiff(d)}>
@@ -94,7 +94,7 @@ export default function CourseCreator() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold opacity-20 uppercase tracking-[.15em] mb-3">句子数量</label>
+            <label className="block text-xs font-semibold opacity-40 uppercase tracking-[.15em] mb-3">句子数量</label>
             <div className="flex gap-2">
               {SENTENCE_COUNTS.map(c=>(
                 <SelBtn key={c} selected={cnt===c} onClick={()=>setCnt(c)}>

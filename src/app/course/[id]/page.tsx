@@ -116,7 +116,7 @@ export default function PracticePage({
   if (loading) {
     return (
       <div className="min-h-screen bgdot flex items-center justify-center">
-        <div className="animate-pulse text-lg opacity-25">加载中...</div>
+        <div className="animate-pulse text-lg opacity-45">加载中...</div>
       </div>
     );
   }

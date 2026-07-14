@@ -34,12 +34,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
         </div>
         <form onSubmit={handleSubmit} className="card px-8 py-8 space-y-6">
           <div>
-            <label className="block text-xs font-semibold opacity-25 uppercase tracking-[.15em] mb-2">用户名</label>
+            <label className="block text-xs font-semibold opacity-45 uppercase tracking-[.15em] mb-2">用户名</label>
             <input type="text" value={username} onChange={e => setUsername(e.target.value)}
               className="input" placeholder="输入用户名" required minLength={2} autoFocus />
           </div>
           <div>
-            <label className="block text-xs font-semibold opacity-25 uppercase tracking-[.15em] mb-2">密码</label>
+            <label className="block text-xs font-semibold opacity-45 uppercase tracking-[.15em] mb-2">密码</label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)}
               className="input" placeholder={isLogin ? "输入密码" : "6 位以上密码"} required minLength={6} />
           </div>
@@ -51,7 +51,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <div className="text-center">
             <button type="button"
               onClick={() => router.push(isLogin ? "/register" : "/login")}
-              className="text-xs opacity-25 hover:opacity-50 transition-opacity">
+              className="text-xs opacity-45 hover:opacity-50 transition-opacity">
               {isLogin ? "没有账号？注册" : "已有账号？登录"}
             </button>
           </div>

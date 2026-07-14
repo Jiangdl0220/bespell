@@ -20,18 +20,18 @@ export default function SentenceCard({ zh, ipa, ipaVisible, onToggleIpa, onSpeak
       <div className="flex items-center justify-center gap-2 flex-wrap mb-6">
         <div className={`flex items-center gap-1.5 flex-wrap justify-center transition-opacity duration-300 ${ipaVisible?"opacity-100":"opacity-0"}`}>
           {ipaWords.map((w,i)=>(
-            <span key={i} className="inline-flex text-xs opacity-25 font-mono px-1.5 py-0.5 bg-white/3">{w}</span>
+            <span key={i} className="inline-flex text-xs opacity-45 font-mono px-1.5 py-0.5 bg-white/6">{w}</span>
           ))}
         </div>
       </div>
 
       <div className="flex items-center justify-center gap-3">
         <button onClick={onToggleIpa}
-          className={`text-xs px-2.5 py-1 transition-colors ${ipaVisible?"bg-[var(--accent)]/15 text-[var(--accent)]":"opacity-15 hover:opacity-30"}`}>
+          className={`text-xs px-2.5 py-1 transition-colors ${ipaVisible?"bg-[var(--accent)]/15 text-[var(--accent)]":"opacity-35 hover:opacity-45"}`}>
           {ipaVisible?"隐藏音标":"显示音标"}
         </button>
         <button onClick={onSpeak}
-          className="text-xs px-2.5 py-1 opacity-15 hover:opacity-30 hover:bg-white/3 transition-colors">
+          className="text-xs px-2.5 py-1 opacity-35 hover:opacity-45 hover:bg-white/6 transition-colors">
           朗读 🔊
         </button>
       </div>

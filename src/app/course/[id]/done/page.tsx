@@ -24,7 +24,7 @@ export default function DonePage() {
         <div className="grid grid-cols-2 gap-3 mb-10 anim-in">
           {[{label:"正确",val:correct},{label:"尝试",val:attempts},{label:"连击",val:`×${combo}`},{label:"用时",val:`${m}:${String(s).padStart(2,"0")}`}].map(st=>(
             <div key={st.label} className="card py-4 px-4">
-              <p className="text-xs opacity-25 uppercase tracking-wider mb-1">{st.label}</p>
+              <p className="text-xs opacity-45 uppercase tracking-wider mb-1">{st.label}</p>
               <p className="text-xl font-bold tabular-nums">{st.val}</p>
             </div>
           ))}
@@ -32,7 +32,7 @@ export default function DonePage() {
 
         <div className="space-y-3 anim-in">
           <button onClick={()=>router.back()} className="btn btn-primary w-full py-3.5 text-sm tracking-wide">再来一次</button>
-          <button onClick={()=>router.push("/")} className="w-full text-xs opacity-20 hover:opacity-40 transition-opacity py-3">课程列表</button>
+          <button onClick={()=>router.push("/")} className="w-full text-xs opacity-40 hover:opacity-40 transition-opacity py-3">课程列表</button>
         </div>
       </div>
     </div>

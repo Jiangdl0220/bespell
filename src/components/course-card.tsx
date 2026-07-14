@@ -18,9 +18,9 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
         <div className="flex items-start justify-between mb-3">
           <div>
             <h3 className="font-semibold group-hover:opacity-80 transition-opacity">{title}</h3>
-            <p className="text-xs opacity-25 mt-0.5">{scene}</p>
+            <p className="text-xs opacity-45 mt-0.5">{scene}</p>
           </div>
-          <span className="text-xs font-semibold opacity-25 bg-white/5 px-2 py-0.5">{difficulty}</span>
+          <span className="text-xs font-semibold opacity-45 bg-white/10 px-2 py-0.5">{difficulty}</span>
         </div>
         <div className="flex gap-1 mb-3">
           {Array.from({length:5}).map((_, i) =>
@@ -31,9 +31,9 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
           <div className="flex-1 h-1 rounded-full overflow-hidden mr-4" style={{background:"var(--border)"}}>
             <div className="h-full rounded-full transition-all duration-500" style={{width:`${progress}%`,background:"var(--accent)"}}/>
           </div>
-          <span className="text-xs opacity-25 tabular-nums">{progress}%</span>
+          <span className="text-xs opacity-45 tabular-nums">{progress}%</span>
         </div>
-        <p className="text-xs opacity-15 mt-2">{sentenceCount} 句</p>
+        <p className="text-xs opacity-35 mt-2">{sentenceCount} 句</p>
       </motion.div>
     </Link>
   );

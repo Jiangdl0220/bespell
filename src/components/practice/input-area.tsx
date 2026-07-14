@@ -45,7 +45,7 @@ export default function InputArea({ words, currentWordIndex, inputValue, hintVis
             </motion.div>
           );
 
-          return <span key={i} className="inline-block w-14 h-0.5 bg-white/5 align-middle mt-8"/>;
+          return <span key={i} className="inline-block w-14 h-0.5 bg-white/10 align-middle mt-8"/>;
         })}
       </div>
 
@@ -53,7 +53,7 @@ export default function InputArea({ words, currentWordIndex, inputValue, hintVis
         className="absolute opacity-0 w-0 h-0 pointer-events-none" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"/>
 
       <div className="flex items-center justify-between mt-6">
-        <p className="text-xs opacity-15">空格确认 · Tab 偷看</p>
+        <p className="text-xs opacity-35">空格确认 · Tab 偷看</p>
         <div className="h-5">
           <AnimatePresence>
             {hintVisible && currentWord && (
