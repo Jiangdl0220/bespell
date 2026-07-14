@@ -6,6 +6,7 @@ import { usePracticeEngine, PracticeSentence } from "@/hooks/use-practice-engine
 import PracticeHeader from "@/components/practice/header";
 import SentenceCard from "@/components/practice/sentence-card";
 import InputArea from "@/components/practice/input-area";
+import RequireAuth from "@/components/require-auth";
 
 export default function PracticePage({
   params: paramsPromise,
@@ -130,6 +131,7 @@ export default function PracticePage({
   }
 
   return (
+    <RequireAuth>
     <div className="min-h-screen" style={{background:"var(--bg)"}}>
       <PracticeHeader
         title={course.title}
@@ -163,5 +165,6 @@ export default function PracticePage({
         />
       </main>
     </div>
+    </RequireAuth>
   );
 }

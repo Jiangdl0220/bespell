@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import RequireAuth from "@/components/require-auth";
 
 export default function DonePage() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function DonePage() {
   const m = Math.floor(time/60), s = time%60;
 
   return (
+    <RequireAuth>
     <div className="min-h-screen bgdot flex items-center justify-center p-6">
       <div className="w-full max-w-sm text-center">
         <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:"spring",stiffness:180,delay:.2}}
@@ -36,5 +38,6 @@ export default function DonePage() {
         </div>
       </div>
     </div>
+    </RequireAuth>
   );
 }
