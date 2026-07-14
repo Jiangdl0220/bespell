@@ -1,94 +1,67 @@
 @import "tailwindcss";
 
 :root {
-  --cr: #f5f0e8;
-  --ink: #1a1a1a;
-  --amb: #c98a2b;
-  --amb-l: #faf4e4;
-  --gr: #3e8e4e;
-  --rd: #c94b3a;
-  --ink-05: rgba(26, 26, 26, 0.05);
-  --ink-10: rgba(26, 26, 26, 0.1);
-  --ink-20: rgba(26, 26, 26, 0.2);
-  --ink-40: rgba(26, 26, 26, 0.4);
+  --bg: #0f0f0d;
+  --card: #1a1a18;
+  --hover: #252523;
+  --text: #ece8e0;
+  --text2: rgba(236, 232, 224, 0.45);
+  --text3: rgba(236, 232, 224, 0.22);
+  --accent: #d4a659;
+  --accent-h: #e0ba6e;
+  --green: #5d9c78;
+  --red: #c96a5a;
+  --border: rgba(236, 232, 224, 0.06);
+  --border-f: rgba(236, 232, 224, 0.12);
 }
 
 body {
-  background: var(--cr);
-  color: var(--ink);
-  font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter Tight", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-::selection {
-  background: var(--amb);
-  color: #fff;
-}
-
+::selection { background: var(--accent); color: var(--bg); }
 input:focus { outline: none; }
 button { cursor: pointer; }
 
-/* Background texture */
 .bgdot {
-  background-image: radial-gradient(circle, rgba(26,26,26,.06) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(circle, rgba(236,232,224,.04) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-/* Card */
 .card {
-  background: #fff;
-  border: 1px solid var(--ink-10);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
-/* Button base */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 600; letter-spacing: .02em;
   transition: all .2s ease;
 }
-.btn-ink {
-  background: var(--ink);
-  color: var(--cr);
+.btn-primary {
+  background: var(--accent); color: var(--bg);
 }
-.btn-ink:hover {
-  background: var(--amb);
-}
-.btn-ghost {
-  color: var(--ink-40);
-}
-.btn-ghost:hover {
-  color: var(--ink);
-}
+.btn-primary:hover { background: var(--accent-h); }
+.btn-ghost { color: var(--text3); }
+.btn-ghost:hover { color: var(--text2); }
 
-/* Input */
 .input {
-  width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--ink-10);
-  padding: .75rem 0;
-  font-size: 1rem;
-  color: var(--ink);
+  width: 100%; background: transparent; border: 0;
+  border-bottom: 1px solid var(--border);
+  padding: .75rem 0; font-size: 1rem;
+  color: var(--text); caret-color: var(--accent);
   transition: border-color .2s;
 }
-.input:focus {
-  border-color: var(--amb);
-}
-.input::placeholder {
-  color: var(--ink-20);
-}
+.input:focus { border-color: var(--accent); }
+.input::placeholder { color: var(--text3); }
 
-/* Display font */
-.display {
-  font-family: Georgia, "Times New Roman", serif;
-}
+.display { font-family: Georgia, "Times New Roman", serif; }
 
-/* Shake */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
+  0%,100% { transform: translateX(0); }
   16% { transform: translateX(-6px); }
   33% { transform: translateX(6px); }
   50% { transform: translateX(-4px); }
@@ -97,7 +70,6 @@ button { cursor: pointer; }
 }
 .shake { animation: shake .3s ease-in-out; }
 
-/* Fade slide */
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }

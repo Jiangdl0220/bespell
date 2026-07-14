@@ -115,22 +115,22 @@ export default function PracticePage({
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f5f0e8] flex items-center justify-center">
-        <div className="animate-pulse text-[#1a1a1a]/30 text-lg">加载中...</div>
+      <div className="min-h-screen bgdot flex items-center justify-center">
+        <div className="animate-pulse text-lg opacity-25">加载中...</div>
       </div>
     );
   }
 
   if (error || !course) {
     return (
-      <div className="min-h-screen bg-[#f5f0e8] flex items-center justify-center">
-        <p className="text-[#c94b3a]">{error || "课程不存在"}</p>
+      <div className="min-h-screen bgdot flex items-center justify-center">
+        <p className="text-[var(--red)]">{error || "课程不存在"}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f0e8]">
+    <div className="min-h-screen" style={{background:"var(--bg)"}}>
       <PracticeHeader
         title={course.title}
         difficulty={course.difficulty}
