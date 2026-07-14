@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const navItems = [
   { label: "课程", href: "/courses", icon: "📖" },
@@ -14,22 +14,46 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [nickname, setNickname] = useState("");
+
+  useEffect(() => {
+    fetch("/api/user/profile")
+      .then(r => r.json())
+      .then(data => {
+        if (data.nickname) setNickname(data.nickname);
+      })
+      .catch(() => {});
+  }, [pathname]); // re-fetch on route change in case profile updated
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
 
+  const avatarLetter = (nickname || "?").charAt(0).toUpperCase();
+
   return (
     <>
-      {/* Mobile hamburger */}
-      <button
-        className="mobile-toggle"
-        onClick={() => setOpen(!open)}
-        aria-label="Toggle menu"
-      >
-        <span className="mobile-toggle-line" />
-        <span className="mobile-toggle-line" />
-        <span className="mobile-toggle-line" />
-      </button>
+      {/* Top bar: hamburger + avatar */}
+      <div className="mobile-topbar">
+        <button
+          className="mobile-toggle"
+          onClick={() => setOpen(!open)}
+          aria-label="Toggle menu"
+        >
+          <span className="mobile-toggle-line" />
+          <span className="mobile-toggle-line" />
+          <span className="mobile-toggle-line" />
+        </button>
+
+        {/* Avatar + nickname next to hamburger */}
+        <button
+          className="mobile-avatar"
+          onClick={() => { router.push("/profile"); setOpen(false); }}
+          title={nickname || "用户中心"}
+        >
+          <span className="mobile-avatar-letter">{avatarLetter}</span>
+          {nickname && <span className="mobile-avatar-name">{nickname}</span>}
+        </button>
+      </div>
 
       {/* Overlay */}
       {open && <div className="sidebar-overlay" onClick={() => setOpen(false)} />}
@@ -38,6 +62,7 @@ export default function Sidebar() {
       <aside className={`sidebar ${open ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand" onClick={() => router.push("/courses")}>
           <span className="sidebar-logo">BeSpell</span>
+          <span className="sidebar-slogan">一词一世界</span>
         </div>
 
         <nav className="sidebar-nav">

@@ -153,6 +153,15 @@
     color: var(--accent);
     letter-spacing: -.02em;
   }
+  .sidebar-slogan {
+    display: block;
+    font-family: "Inter Tight", system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text3);
+    letter-spacing: .08em;
+    margin-top: 2px;
+  }
   .sidebar-nav {
     flex: 1;
     padding: 8px 10px;
@@ -192,6 +201,54 @@
   .sidebar-label { white-space: nowrap; }
 
   /* ── Mobile ── */
+  .mobile-topbar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 45;
+    height: 48px;
+    padding: 8px 12px;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .mobile-avatar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 10px;
+    transition: background .15s;
+  }
+  .mobile-avatar:hover { background: var(--hover); }
+  .mobile-avatar-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .mobile-avatar-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .mobile-toggle {
     display: none;
     position: fixed;
@@ -229,6 +286,7 @@
   @media (max-width: 768px) {
     .main-content { margin-left: 0; }
     .page-container { padding: 60px 20px 32px; }
+    .mobile-topbar { display: flex; }
     .mobile-toggle { display: flex; }
     .sidebar {
       transform: translateX(-100%);

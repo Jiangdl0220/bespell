@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BeSpell — AI 英语拼写练习",
-  description: "AI 生成英语对话课程，看中文拼英文，沉浸式翻译练习",
+  title: "BeSpell — 一词一世界",
+  description: "AI 英语拼写练习 · 看中文拼英文 · 一词一世界",
 };
 
 export default function RootLayout({
