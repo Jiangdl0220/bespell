@@ -7,6 +7,7 @@ const navItems = [
   { label: "课程", href: "/courses", icon: "📖" },
   { label: "复习", href: "/review", icon: "🔄" },
   { label: "竞技", href: "/battle", icon: "⚔️" },
+  { label: "我的", href: "/profile", icon: "👤" },
 ];
 
 export default function Sidebar() {

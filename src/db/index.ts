@@ -21,9 +21,11 @@ export async function getDb(): Promise<any> {
         id TEXT PRIMARY KEY,
         username TEXT NOT NULL UNIQUE,
         password_hash TEXT NOT NULL,
-        created_at TEXT NOT NULL DEFAULT ''''
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )
     `;
+    // Migration: add nickname column (ignore if exists)
+    await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS nickname TEXT`;
     await sql`
       CREATE TABLE IF NOT EXISTS courses (
         id TEXT PRIMARY KEY,
@@ -32,7 +34,7 @@ export async function getDb(): Promise<any> {
         scene TEXT NOT NULL,
         difficulty TEXT NOT NULL,
         sentences TEXT NOT NULL,
-        created_at TEXT NOT NULL DEFAULT ''''
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )
     `;
     await sql`
@@ -56,7 +58,7 @@ export async function getDb(): Promise<any> {
         course_id TEXT NOT NULL,
         course_title TEXT NOT NULL,
         source TEXT NOT NULL,
-        created_at TEXT NOT NULL DEFAULT ''''
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )
     `;
     await sql`
@@ -67,9 +69,9 @@ export async function getDb(): Promise<any> {
         opponent_id TEXT REFERENCES users(id),
         room_code TEXT NOT NULL UNIQUE,
         max_peeks INTEGER NOT NULL DEFAULT 5,
-        status TEXT NOT NULL DEFAULT ''waiting'',
+        status TEXT NOT NULL,
         winner_id TEXT,
-        created_at TEXT NOT NULL DEFAULT ''''
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )
     `;
     await sql`
@@ -82,9 +84,24 @@ export async function getDb(): Promise<any> {
         peek_count INTEGER NOT NULL DEFAULT 0
       )
     `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS preset_courses (
+        id TEXT PRIMARY KEY,
+        category TEXT NOT NULL,
+        title TEXT NOT NULL,
+        scene TEXT NOT NULL,
+        difficulty TEXT NOT NULL,
+        sentences TEXT NOT NULL,
+        sentence_count INTEGER NOT NULL DEFAULT 50,
+        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+      )
+    `;
     console.log("🔌 Using Neon Postgres (tables ready)");
 
     _db = drizzlePg(sql, { schema: pgSchema });
+
+    // Seed preset courses (async, non-blocking)
+    import("./seed-preset").then(({ seedPresetCourses }) => seedPresetCourses(_db));
   } else if (process.env.VERCEL || process.env.EDGEONE_PAGES) {
     throw new Error(
       "DATABASE_URL not configured. Add it in platform Settings → Environment Variables."
@@ -98,6 +115,9 @@ export async function getDb(): Promise<any> {
     sqlite.pragma("foreign_keys = ON");
     _db = drizzleSqlite(sqlite, { schema: sqliteSchema });
     console.log("📦 Using local SQLite");
+
+    // Seed preset courses (async, non-blocking)
+    import("./seed-preset").then(({ seedPresetCourses }) => seedPresetCourses(_db));
   }
 
   return _db;

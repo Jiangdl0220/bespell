@@ -1,11 +1,11 @@
 import { getSessionUserId } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import CourseCreator from "@/components/course-creator";
+import NewCoursePage from "@/components/new-course-page";
 
 export const dynamic = "force-dynamic";
 
-export default async function NewCoursePage() {
+export default async function NewPage() {
   const userId = await getSessionUserId();
   if (!userId) redirect("/login");
-  return <CourseCreator />;
+  return <NewCoursePage />;
 }

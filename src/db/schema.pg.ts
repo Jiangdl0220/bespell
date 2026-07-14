@@ -4,6 +4,7 @@ export const users = pgTable("users", {
   id: text("id").primaryKey(),
   username: text("username").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
+  nickname: text("nickname"),
   createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
 });
 
@@ -73,4 +74,15 @@ export const battleResults = pgTable("battle_results", {
   finishedAt: timestamp("finished_at", { mode: "string" }),
   totalTime: integer("total_time").notNull().default(0),
   peekCount: integer("peek_count").notNull().default(0),
+});
+
+export const presetCourses = pgTable("preset_courses", {
+  id: text("id").primaryKey(),
+  category: text("category").notNull(),
+  title: text("title").notNull(),
+  scene: text("scene").notNull(),
+  difficulty: text("difficulty").notNull(),
+  sentences: text("sentences").notNull(),
+  sentenceCount: integer("sentence_count").notNull().default(50),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
 });

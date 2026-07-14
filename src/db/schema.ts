@@ -4,6 +4,7 @@ export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   username: text("username").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
+  nickname: text("nickname"),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
@@ -68,4 +69,15 @@ export const battleResults = sqliteTable("battle_results", {
   finishedAt: integer("finished_at", { mode: "timestamp" }),
   totalTime: integer("total_time").notNull().default(0),
   peekCount: integer("peek_count").notNull().default(0),
+});
+
+export const presetCourses = sqliteTable("preset_courses", {
+  id: text("id").primaryKey(),
+  category: text("category").notNull(),
+  title: text("title").notNull(),
+  scene: text("scene").notNull(),
+  difficulty: text("difficulty").notNull(),
+  sentences: text("sentences").notNull(),
+  sentenceCount: integer("sentence_count").notNull().default(50),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull().$defaultFn(() => new Date()),
 });
