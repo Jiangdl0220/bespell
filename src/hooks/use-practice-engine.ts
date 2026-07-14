@@ -39,6 +39,7 @@ export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word:
   const [isComplete, setIsComplete] = useState(false);
   const [startTime] = useState(() => Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
+  const lastPeeked = useRef("");
 
   const currentSentence = sentences[currentIndex] ?? null;
   const words = currentSentence?.words ?? [];
@@ -125,7 +126,8 @@ export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word:
       if (e.key === "Tab") {
         e.preventDefault();
         setHintVisible(true);
-        if (currentWord && !isPunct(currentWord) && onPeek) {
+        if (currentWord && !isPunct(currentWord) && onPeek && lastPeeked.current !== currentWord.en) {
+          lastPeeked.current = currentWord.en;
           onPeek(currentWord);
         }
         return;

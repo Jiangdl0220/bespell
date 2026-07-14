@@ -41,6 +41,25 @@ export async function POST(req: NextRequest) {
   }
 
   const db = await getDb();
+
+  // Deduplicate: skip if same word+course already exists for this user
+  const existing = await db
+    .select()
+    .from(reviewWords)
+    .where(
+      and(
+        eq(reviewWords.userId, userId),
+        eq(reviewWords.wordEn, wordEn),
+        eq(reviewWords.courseId, courseId),
+        eq(reviewWords.source, source)
+      )
+    )
+    .limit(1);
+
+  if (existing.length > 0) {
+    return NextResponse.json({ success: true, id: existing[0].id, existed: true });
+  }
+
   const id = crypto.randomUUID();
 
   await db.insert(reviewWords).values({
