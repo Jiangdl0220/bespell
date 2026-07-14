@@ -21,7 +21,7 @@ export async function getDb(): Promise<any> {
         id TEXT PRIMARY KEY,
         username TEXT NOT NULL UNIQUE,
         password_hash TEXT NOT NULL,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        created_at TEXT NOT NULL DEFAULT ''''
       )
     `;
     await sql`
@@ -32,7 +32,7 @@ export async function getDb(): Promise<any> {
         scene TEXT NOT NULL,
         difficulty TEXT NOT NULL,
         sentences TEXT NOT NULL,
-        created_at TIMESTAMP NOT NULL DEFAULT NOW()
+        created_at TEXT NOT NULL DEFAULT ''''
       )
     `;
     await sql`

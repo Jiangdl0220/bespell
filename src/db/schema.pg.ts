@@ -4,7 +4,7 @@ export const users = pgTable("users", {
   id: text("id").primaryKey(),
   username: text("username").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
 });
 
 export const courses = pgTable("courses", {
@@ -16,7 +16,7 @@ export const courses = pgTable("courses", {
   scene: text("scene").notNull(),
   difficulty: text("difficulty").notNull(),
   sentences: text("sentences").notNull(), // JSON string
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
 });
 
 export const progress = pgTable("progress", {
@@ -30,5 +30,5 @@ export const progress = pgTable("progress", {
   sentenceIndex: integer("sentence_index").notNull(),
   attempts: integer("attempts").notNull().default(0),
   correct: integer("correct").notNull().default(0),
-  lastSeen: timestamp("last_seen"),
+  lastSeen: timestamp("last_seen", { mode: "string" }),
 });

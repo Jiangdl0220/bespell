@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       .set({
         attempts,
         correct,
-        lastSeen: new Date(),
+        lastSeen: new Date().toISOString(),
       })
       .where(eq(progress.id, existing[0].id));
   } else {
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
       sentenceIndex: sentenceIndex ?? 0,
       attempts: attempts ?? 1,
       correct: correct ?? 1,
-      lastSeen: new Date(),
+      lastSeen: new Date().toISOString(),
     });
   }
 
