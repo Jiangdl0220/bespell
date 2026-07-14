@@ -7,13 +7,13 @@
   --text: #eaede6;
   --text2: rgba(234, 237, 230, 0.5);
   --text3: rgba(234, 237, 230, 0.33);
-  --accent: #8cab8a;
-  --accent-h: #9bbc99;
-  --green: #7da17d;
+  --accent: #6ee7a4;
+  --accent-h: #86efac;
+  --green: #5dbe8a;
   --red: #d4837a;
   --border: rgba(234, 237, 230, 0.06);
   --border-f: rgba(234, 237, 230, 0.12);
-  --accent-bg: rgba(140, 171, 138, 0.08);
+  --accent-bg: rgba(110, 231, 164, 0.08);
 }
 
 body {
