@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { usePracticeEngine, PracticeSentence } from "@/hooks/use-practice-engine";
 import PracticeHeader from "@/components/practice/header";
@@ -57,6 +57,29 @@ export default function PracticePage({
       engine.focusInput();
     }
   }, [loading, course]);
+
+  // Auto-save progress after each completed sentence
+  const prevIndexRef = useRef(engine.currentIndex);
+  useEffect(() => {
+    if (!courseId) return;
+    // Only save when we advance (not first render)
+    if (engine.currentIndex > prevIndexRef.current) {
+      const prevSentence = course?.sentences[prevIndexRef.current];
+      if (prevSentence) {
+        fetch("/api/progress", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            courseId,
+            sentenceIndex: prevIndexRef.current,
+            attempts: 1,
+            correct: 1,
+          }),
+        }).catch(() => {});
+      }
+    }
+    prevIndexRef.current = engine.currentIndex;
+  }, [engine.currentIndex, courseId, course?.sentences]);
 
   // Navigate to completion
   useEffect(() => {
