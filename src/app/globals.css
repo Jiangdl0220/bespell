@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #0a0f0c;
-  --card: #131916;
-  --hover: #1a201c;
-  --text: #e2ebe4;
-  --text2: rgba(226, 235, 228, 0.48);
-  --text3: rgba(226, 235, 228, 0.32);
-  --accent: #6ee7a4;
-  --accent-h: #86efac;
-  --green: #5dbe8a;
-  --red: #e87a6e;
-  --border: rgba(226, 235, 228, 0.06);
-  --border-f: rgba(226, 235, 228, 0.12);
-  --accent-bg: rgba(110, 231, 164, 0.08);
+  --bg: #1a1d18;
+  --card: #22251f;
+  --hover: #2a2e27;
+  --text: #eaede6;
+  --text2: rgba(234, 237, 230, 0.5);
+  --text3: rgba(234, 237, 230, 0.33);
+  --accent: #8cab8a;
+  --accent-h: #9bbc99;
+  --green: #7da17d;
+  --red: #d4837a;
+  --border: rgba(234, 237, 230, 0.06);
+  --border-f: rgba(234, 237, 230, 0.12);
+  --accent-bg: rgba(140, 171, 138, 0.08);
 }
 
 body {
@@ -28,7 +28,7 @@ input:focus { outline: none; }
 button { cursor: pointer; }
 
 .bgdot {
-  background-image: radial-gradient(circle, rgba(226,235,228,.04) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(234,237,230,.04) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
