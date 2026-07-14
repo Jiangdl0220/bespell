@@ -36,7 +36,7 @@ export default function InputArea({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="bg-white border border-[#1a1a1a]/8 px-6 py-8 relative cursor-text"
+      className="bg-white border border-[#1a1a1a]/8 px-8 py-8 relative cursor-text"
       onClick={() => inputRef.current?.focus()}
     >
       {/* Word underlines — one per word, current one shows typed chars */}
@@ -93,8 +93,8 @@ export default function InputArea({
                   className="block h-0.5 rounded-full transition-all duration-200"
                   style={{
                     width: inputValue
-                      ? `${Math.max(inputValue.length * 11, 28)}px`
-                      : "28px",
+                      ? `${Math.max(inputValue.length * 14, 40)}px`
+                      : "40px",
                     backgroundColor:
                       feedback === "correct"
                         ? "#4a9c5d"
@@ -111,7 +111,7 @@ export default function InputArea({
           return (
             <span
               key={i}
-              className="inline-block w-7 h-0.5 bg-[#1a1a1a]/10 align-middle mt-6"
+              className="inline-block w-12 h-0.5 bg-[#1a1a1a]/10 align-middle mt-6"
             />
           );
         })}
@@ -147,7 +147,7 @@ export default function InputArea({
                 exit={{ opacity: 0, y: 4 }}
                 className="text-xs text-[#c98a2b] font-semibold"
               >
-                {currentWord.zh || currentWord.en}
+                {currentWord.en}
               </motion.span>
             )}
           </AnimatePresence>

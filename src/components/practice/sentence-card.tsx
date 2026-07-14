@@ -33,7 +33,7 @@ export default function SentenceCard({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="bg-white border border-[#1a1a1a]/8 px-6 py-6 text-center"
+      className="bg-white border border-[#1a1a1a]/8 px-8 py-7 text-center"
     >
       {/* Chinese */}
       <h2 className="text-xl font-semibold text-[#1a1a1a] leading-relaxed mb-5">
