@@ -1,45 +1,107 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f0e8;
-  --foreground: #1a1a1a;
-  --color-cream: #f5f0e8;
-  --color-ink: #1a1a1a;
-  --color-amber: #c98a2b;
-  --color-amber-light: #f0d78c;
-  --color-green: #4a9c5d;
-  --color-red: #c94b3a;
-  --font-display: "Playfair Display", Georgia, serif;
-  --font-body: "Inter Tight", system-ui, -apple-system, sans-serif;
+  --cr: #f5f0e8;
+  --ink: #1a1a1a;
+  --amb: #c98a2b;
+  --amb-l: #faf4e4;
+  --gr: #3e8e4e;
+  --rd: #c94b3a;
+  --ink-05: rgba(26, 26, 26, 0.05);
+  --ink-10: rgba(26, 26, 26, 0.1);
+  --ink-20: rgba(26, 26, 26, 0.2);
+  --ink-40: rgba(26, 26, 26, 0.4);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-body);
+  background: var(--cr);
+  color: var(--ink);
+  font-family: "Inter Tight", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Input focus styles */
-input:focus {
-  outline: none;
-}
-
-/* Selection color */
 ::selection {
-  background: var(--color-amber);
-  color: var(--color-cream);
+  background: var(--amb);
+  color: #fff;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+input:focus { outline: none; }
+button { cursor: pointer; }
+
+/* Background texture */
+.bgdot {
+  background-image: radial-gradient(circle, rgba(26,26,26,.06) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
-::-webkit-scrollbar-track {
+
+/* Card */
+.card {
+  background: #fff;
+  border: 1px solid var(--ink-10);
+}
+
+/* Button base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all .2s ease;
+}
+.btn-ink {
+  background: var(--ink);
+  color: var(--cr);
+}
+.btn-ink:hover {
+  background: var(--amb);
+}
+.btn-ghost {
+  color: var(--ink-40);
+}
+.btn-ghost:hover {
+  color: var(--ink);
+}
+
+/* Input */
+.input {
+  width: 100%;
   background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--ink-10);
+  padding: .75rem 0;
+  font-size: 1rem;
+  color: var(--ink);
+  transition: border-color .2s;
 }
-::-webkit-scrollbar-thumb {
-  background: rgba(26, 26, 26, 0.15);
-  border-radius: 3px;
+.input:focus {
+  border-color: var(--amb);
 }
+.input::placeholder {
+  color: var(--ink-20);
+}
+
+/* Display font */
+.display {
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+/* Shake */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  16% { transform: translateX(-6px); }
+  33% { transform: translateX(6px); }
+  50% { transform: translateX(-4px); }
+  66% { transform: translateX(4px); }
+  83% { transform: translateX(-2px); }
+}
+.shake { animation: shake .3s ease-in-out; }
+
+/* Fade slide */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim-in { animation: slideUp .4s ease-out both; }
+.anim-in:nth-child(2) { animation-delay: .08s; }
+.anim-in:nth-child(3) { animation-delay: .16s; }

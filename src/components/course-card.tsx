@@ -11,15 +11,22 @@ interface CourseCardProps {
   sentenceCount: number;
   completed: number;
   progress: number;
-  createdAt?: string | Date;
 }
 
-const difficultyColor: Record<string, string> = {
-  A1: "bg-green-100 text-green-800",
-  A2: "bg-blue-100 text-blue-800",
-  B1: "bg-amber-100 text-amber-800",
-  B2: "bg-orange-100 text-orange-800",
-  C1: "bg-red-100 text-red-800",
+const difficultyLabel: Record<string, string> = {
+  A1: "入门",
+  A2: "初级",
+  B1: "中级",
+  B2: "中高级",
+  C1: "高级",
+};
+
+const difficultyBar: Record<string, number> = {
+  A1: 1,
+  A2: 2,
+  B1: 3,
+  B2: 4,
+  C1: 5,
 };
 
 export default function CourseCard({
@@ -28,50 +35,57 @@ export default function CourseCard({
   scene,
   difficulty,
   sentenceCount,
-  completed,
-  progress: progressPercent,
+  progress,
 }: CourseCardProps) {
+  const bars = difficultyBar[difficulty] || 1;
+
   return (
-    <motion.div
-      whileHover={{ y: -2 }}
-      transition={{ duration: 0.2 }}
-    >
-      <Link
-        href={`/course/${id}`}
-        className="block bg-white border border-[#1a1a1a]/10 p-6 hover:border-[#c98a2b]/30 transition-colors"
+    <Link href={`/course/${id}`}>
+      <motion.div
+        whileHover={{ y: -2 }}
+        className="card p-5 group cursor-pointer"
       >
         <div className="flex items-start justify-between mb-3">
           <div>
-            <h3 className="text-lg font-semibold text-[#1a1a1a]">{title}</h3>
-            <p className="text-sm text-[#1a1a1a]/50 mt-1">{scene}</p>
+            <h3 className="font-semibold text-[#1a1a1a] group-hover:text-[#c98a2b] transition-colors">
+              {title}
+            </h3>
+            <p className="text-xs text-[#1a1a1a]/40 mt-0.5">{scene}</p>
           </div>
-          <span
-            className={`px-2 py-0.5 text-xs font-semibold rounded ${
-              difficultyColor[difficulty] || "bg-gray-100 text-gray-800"
-            }`}
-          >
+          <span className="text-xs font-semibold text-[#1a1a1a]/30 bg-[#1a1a1a]/5 px-2 py-0.5">
             {difficulty}
           </span>
         </div>
 
-        {/* Progress bar */}
-        <div className="mt-4">
-          <div className="flex justify-between text-xs text-[#1a1a1a]/50 mb-1.5">
-            <span>
-              {completed} / {sentenceCount} 句已完成
-            </span>
-            <span>{progressPercent}%</span>
-          </div>
-          <div className="h-1.5 bg-[#1a1a1a]/5 rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="h-full bg-[#c98a2b] rounded-full"
+        {/* Difficulty dots */}
+        <div className="flex gap-1 mb-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <span
+              key={i}
+              className={`w-1.5 h-1.5 rounded-full ${
+                i < bars ? "bg-[#c98a2b]" : "bg-[#1a1a1a]/10"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Progress */}
+        <div className="flex items-center justify-between">
+          <div className="flex-1 h-1 bg-[#1a1a1a]/5 rounded-full overflow-hidden mr-4">
+            <div
+              className="h-full bg-[#c98a2b] rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
             />
           </div>
+          <span className="text-xs text-[#1a1a1a]/40 tabular-nums">
+            {progress}%
+          </span>
         </div>
-      </Link>
-    </motion.div>
+
+        <p className="text-xs text-[#1a1a1a]/25 mt-2">
+          {sentenceCount} 句
+        </p>
+      </motion.div>
+    </Link>
   );
 }

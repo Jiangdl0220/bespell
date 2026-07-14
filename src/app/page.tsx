@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const userId = await getSessionUserId();
-  if (!userId) return null; // middleware handles redirect
+  if (!userId) return null;
 
   const db = getDb();
   const userResults = await db
@@ -22,34 +22,33 @@ export default async function HomePage() {
   const user = userResults[0];
 
   return (
-    <div className="min-h-screen bg-[#f5f0e8]">
-      {/* Left accent */}
-      <div className="fixed left-0 top-0 h-full w-2 bg-[#c98a2b]" />
-
-      <div className="max-w-3xl mx-auto px-6 py-12">
+    <div className="min-h-screen bgdot">
+      <div className="max-w-2xl mx-auto px-6 py-12">
         {/* Header */}
-        <header className="flex items-center justify-between mb-12">
+        <header className="flex items-center justify-between mb-10">
           <div>
-            <h1 className="font-serif text-3xl font-bold text-[#1a1a1a]">
+            <h1 className="display text-3xl font-bold text-[#1a1a1a] tracking-tight">
               BeSpell
             </h1>
-            <p className="text-sm text-[#1a1a1a]/50 mt-1">
-              你好，{user?.username}
+            <p className="text-xs text-[#1a1a1a]/30 mt-1">
+              {user?.username}
             </p>
           </div>
           <LogoutButton />
         </header>
 
-        {/* New course button */}
+        {/* CTA */}
         <Link
           href="/new"
-          className="block w-full bg-[#1a1a1a] text-[#f5f0e8] text-center py-4 text-base font-semibold tracking-wide
-                     hover:bg-[#c98a2b] transition-colors duration-200 mb-8"
+          className="btn btn-ink w-full py-3.5 text-sm mb-8 tracking-wide"
         >
           + 新建课程
         </Link>
 
-        {/* Course list */}
+        {/* Section title */}
+        <h2 className="text-xs font-semibold text-[#1a1a1a]/25 uppercase tracking-[0.15em] mb-4">
+          我的课程
+        </h2>
         <CourseList />
       </div>
     </div>

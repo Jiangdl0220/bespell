@@ -139,7 +139,7 @@ export default function PracticePage({
         combo={engine.combo}
       />
 
-      <main className="w-full max-w-3xl mx-auto px-6 py-10 space-y-6">
+      <main className="w-full max-w-3xl mx-auto px-6 py-8 space-y-5">
         <SentenceCard
           zh={engine.currentSentence?.zh ?? ""}
           ipa={engine.currentSentence?.ipa ?? ""}

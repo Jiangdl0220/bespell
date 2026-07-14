@@ -29,14 +29,12 @@ export default function CourseList() {
 
   if (loading) {
     return (
-      <div className="grid gap-4">
+      <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="bg-white border border-[#1a1a1a]/10 p-6 animate-pulse"
-          >
-            <div className="h-5 w-48 bg-[#1a1a1a]/5 rounded mb-3" />
-            <div className="h-3 w-24 bg-[#1a1a1a]/5 rounded" />
+          <div key={i} className="card p-5 animate-pulse">
+            <div className="h-4 w-40 bg-[#1a1a1a]/5 mb-3" />
+            <div className="h-3 w-24 bg-[#1a1a1a]/5 mb-3" />
+            <div className="h-1 w-full bg-[#1a1a1a]/5" />
           </div>
         ))}
       </div>
@@ -46,13 +44,13 @@ export default function CourseList() {
   if (courses.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-[#1a1a1a]/40 text-lg">还没有课程，点击上方按钮开始</p>
+        <p className="text-sm text-[#1a1a1a]/25">还没有课程</p>
       </div>
     );
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="space-y-3">
       {courses.map((course) => (
         <CourseCard key={course.id} {...course} />
       ))}

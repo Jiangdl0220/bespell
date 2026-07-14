@@ -14,9 +14,9 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="text-sm text-[#1a1a1a]/40 hover:text-[#c94b3a] transition-colors"
+      className="text-xs text-[#1a1a1a]/20 hover:text-[#c94b3a] transition-colors"
     >
-      退出登录
+      退出
     </button>
   );
 }
