@@ -12,7 +12,7 @@ function SelBtn({ selected, onClick, children }: { selected: boolean; onClick: (
     <button onClick={onClick} className="flex-1 py-3 text-center border transition-all"
       style={{
         borderColor: selected ? "var(--accent)" : "var(--border)",
-        background: selected ? "rgba(212,166,89,0.08)" : "transparent",
+        background: selected ? "var(--accent-bg)" : "transparent",
         color: selected ? "var(--accent)" : "var(--text2)",
         fontWeight: selected ? 600 : 400,
       }}>
@@ -87,7 +87,7 @@ export default function CourseCreator() {
               {DIFFICULTY_LEVELS.map(d=>(
                 <SelBtn key={d} selected={diff===d} onClick={()=>setDiff(d)}>
                   <span className="block text-sm">{d}</span>
-                  <span className="block text-xs opacity-30 mt-0.5">{desc[d]}</span>
+                  <span className="block text-xs opacity-45 mt-0.5">{desc[d]}</span>
                 </SelBtn>
               ))}
             </div>
@@ -99,7 +99,7 @@ export default function CourseCreator() {
               {SENTENCE_COUNTS.map(c=>(
                 <SelBtn key={c} selected={cnt===c} onClick={()=>setCnt(c)}>
                   <span className="block text-sm">{c}</span>
-                  <span className="block text-xs opacity-30 mt-0.5">句</span>
+                  <span className="block text-xs opacity-45 mt-0.5">句</span>
                 </SelBtn>
               ))}
             </div>

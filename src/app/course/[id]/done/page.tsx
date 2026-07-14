@@ -19,7 +19,7 @@ export default function DonePage() {
           {"★".repeat(starCount)}{"☆".repeat(5-starCount)}
         </motion.div>
         <h1 className="display text-2xl font-bold mb-2">很棒！</h1>
-        <p className="text-sm opacity-30 mb-10">正确率 {accuracy}%</p>
+        <p className="text-sm opacity-45 mb-10">正确率 {accuracy}%</p>
 
         <div className="grid grid-cols-2 gap-3 mb-10 anim-in">
           {[{label:"正确",val:correct},{label:"尝试",val:attempts},{label:"连击",val:`×${combo}`},{label:"用时",val:`${m}:${String(s).padStart(2,"0")}`}].map(st=>(

@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #0f0f0d;
-  --card: #1a1a18;
-  --hover: #252523;
-  --text: #ece8e0;
-  --text2: rgba(236, 232, 224, 0.45);
-  --text3: rgba(236, 232, 224, 0.35);
-  --accent: #d4a659;
-  --accent-h: #e0ba6e;
-  --green: #5d9c78;
-  --red: #c96a5a;
-  --border: rgba(236, 232, 224, 0.06);
-  --border-f: rgba(236, 232, 224, 0.12);
+  --bg: #0a0f0c;
+  --card: #131916;
+  --hover: #1a201c;
+  --text: #e2ebe4;
+  --text2: rgba(226, 235, 228, 0.48);
+  --text3: rgba(226, 235, 228, 0.32);
+  --accent: #6ee7a4;
+  --accent-h: #86efac;
+  --green: #5dbe8a;
+  --red: #e87a6e;
+  --border: rgba(226, 235, 228, 0.06);
+  --border-f: rgba(226, 235, 228, 0.12);
+  --accent-bg: rgba(110, 231, 164, 0.08);
 }
 
 body {
@@ -27,7 +28,7 @@ input:focus { outline: none; }
 button { cursor: pointer; }
 
 .bgdot {
-  background-image: radial-gradient(circle, rgba(236,232,224,.04) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(226,235,228,.04) 1px, transparent 1px);
   background-size: 20px 20px;
 }
 
@@ -38,8 +39,7 @@ button { cursor: pointer; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
-  font-weight: 600; letter-spacing: .02em;
-  transition: all .2s ease;
+  font-weight: 600; letter-spacing: .02em; transition: all .2s ease;
 }
 .btn-primary {
   background: var(--accent); color: var(--bg);

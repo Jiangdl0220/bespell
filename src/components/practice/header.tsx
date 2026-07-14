@@ -33,7 +33,7 @@ export default function PracticeHeader({ title, difficulty, currentIndex, total,
         </div>
         <motion.div key={combo} initial={{scale:combo>0?1.25:1}} animate={{scale:1}}
           className="flex items-baseline gap-1 shrink-0">
-          <span className={`text-2xl font-bold tabular-nums transition-colors ${combo>=10?"text-amber-500":combo>=5?"text-[var(--accent)]":"opacity-35"}`}>
+          <span className={`text-2xl font-bold tabular-nums transition-colors ${combo>=10?"text-[var(--accent-h)]":combo>=5?"text-[var(--accent)]":"opacity-35"}`}>
             {combo}
           </span>
         </motion.div>
