@@ -1,12 +1,17 @@
 export function buildCoursePrompt(
   scene: string,
   difficulty: string,
-  count: number
+  count: number,
+  sentenceOffset: number = 0
 ): string {
+  const continuation = sentenceOffset > 0
+    ? `\nThis is a CONTINUATION. Start from sentence #${sentenceOffset + 1}. Continue the same conversation naturally.`
+    : "";
+
   return `You are a senior ESL teacher. Create ${count} English sentences for a dialogue scenario.
 
 Scene: ${scene}
-Difficulty: CEFR ${difficulty}
+Difficulty: CEFR ${difficulty}${continuation}
 Requirements:
 - Sentences should form a natural, coherent conversation
 - Vocabulary and grammar must match CEFR ${difficulty} level
@@ -24,7 +29,7 @@ Format as JSON array:
   ]
 }]
 
-Important: The "words" array must split the English sentence word-by-word, preserving punctuation as separate entries. Example: "Hello, world!" becomes [{"en":"Hello","zh":"你好"}, {"en":",","zh":"，"}, {"en":"world","zh":"世界"}, {"en":"!","zh":"！"}]
+Important: The "words" array must split the English sentence word-by-word, preserving punctuation as separate entries. Example: "Hello, world!" becomes [{"en":"Hello","zh":"你好"}, {"en":",","zh":"，"}, {"en":"world","zh":"世界"}, {"en":",","zh":"！"}]
 
 Return ONLY the JSON array, nothing else.`;
 }

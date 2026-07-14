@@ -37,27 +37,38 @@ export async function POST(req: NextRequest) {
       baseURL: "https://api.deepseek.com",
     });
 
-    const completion = await client.chat.completions.create({
-      model: "deepseek-chat",
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are a JSON-only API. Return valid JSON arrays only. Never include markdown, explanations, or code blocks.",
-        },
-        {
-          role: "user",
-          content: buildCoursePrompt(scene, difficulty, count),
-        },
-      ],
-      temperature: 0.7,
-      max_tokens: 8192,
-    });
+    // For >30 sentences, split into batches to avoid token limits
+    const batchSize = 30;
+    let allSentences: Array<Record<string, unknown>> = [];
 
-    const raw = completion.choices[0]?.message?.content || "[]";
-    // Strip markdown code fences if present
-    const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-    const sentences = JSON.parse(cleaned);
+    for (let offset = 0; offset < count; offset += batchSize) {
+      const batchCount = Math.min(batchSize, count - offset);
+      const batchPrompt = buildCoursePrompt(scene, difficulty, batchCount, allSentences.length);
+
+      const completion = await client.chat.completions.create({
+        model: "deepseek-chat",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are a JSON-only API. Return valid JSON arrays only. Never include markdown, explanations, or code blocks.",
+          },
+          { role: "user", content: batchPrompt },
+        ],
+        temperature: 0.7,
+        max_tokens: 16384,
+      });
+
+      const raw = completion.choices[0]?.message?.content || "[]";
+      const cleaned = raw
+        .replace(/```json\n?/g, "")
+        .replace(/```\n?/g, "")
+        .trim();
+      const batch = JSON.parse(cleaned);
+      allSentences = allSentences.concat(batch);
+    }
+
+    const sentences = allSentences;
 
     const db = getDb();
     const courseId = uuid();
