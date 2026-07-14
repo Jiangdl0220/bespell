@@ -40,3 +40,18 @@ export async function GET(
     total: sentences.length,
   });
 }
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const userId = await getSessionUserId();
+  if (!userId) {
+    return NextResponse.json({ error: "\u672a\u767b\u5f55" }, { status: 401 });
+  }
+
+  const { id } = await params;
+  const db = await getDb();
+  await db.delete(courses).where(and(eq(courses.id, id), eq(courses.userId, userId)));
+  return NextResponse.json({ success: true });
+}

@@ -17,6 +17,12 @@ export interface PracticeSentence {
 type SentenceStatus = "pending" | "correct" | "error";
 type FeedbackType = "correct" | "error" | null;
 
+const PUNCTUATION = new Set([",", ".", "!", "?", ";", ":", "\u2014", "\u2013", "\u2026", "...", "\u201c", "\u201d", "\u2018", "\u2019", "\u0022", "\u0027", "\u002d"]);
+
+export function isPunct(token: WordToken): boolean {
+  return PUNCTUATION.has(token.en);
+}
+
 export function usePracticeEngine(sentences: PracticeSentence[]) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
@@ -35,27 +41,40 @@ export function usePracticeEngine(sentences: PracticeSentence[]) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const currentSentence = sentences[currentIndex] ?? null;
-  const currentWord = currentSentence?.words[currentWordIndex] ?? null;
+  const words = currentSentence?.words ?? [];
+
+  // Skip initial punctuation
+  const effectiveStart = (() => {
+    let i = 0;
+    while (i < words.length && isPunct(words[i])) i++;
+    return i;
+  })();
+
+  // Find next non-punct starting from idx+1
+  const nextRealWord = useCallback((from: number): number | null => {
+    for (let i = from + 1; i < words.length; i++) {
+      if (!isPunct(words[i])) return i;
+    }
+    return null;
+  }, [words.length, currentIndex]);
+
+  const currentWord = words[currentWordIndex] ?? null;
   const isLastSentence = currentIndex === sentences.length - 1;
-  const isLastWord =
-    currentSentence &&
-    currentWordIndex === currentSentence.words.length - 1;
+  const isLastWord = nextRealWord(currentWordIndex) === null;
 
   // Submit current word on space/enter
   const submitWord = useCallback(() => {
-    if (!currentWord || feedback) return;
+    if (!currentWord || feedback || isPunct(currentWord)) return;
 
     const trimmed = inputValue.trim();
     const target = currentWord.en;
 
-    // Case-insensitive comparison, collapse multiple spaces
     const normalized = trimmed.replace(/\s+/g, " ").toLowerCase();
     const normalizedTarget = target.toLowerCase();
 
     setTotalAttempts((p) => p + 1);
 
     if (normalized === normalizedTarget) {
-      // Correct
       setFeedback("correct");
       setCombo((c) => {
         const next = c + 1;
@@ -64,19 +83,16 @@ export function usePracticeEngine(sentences: PracticeSentence[]) {
       });
       setTotalCorrect((p) => p + 1);
 
-      // Move to next word after animation
       setTimeout(() => {
         setFeedback(null);
         setInputValue("");
 
         if (isLastWord) {
-          // Sentence complete
           setSentenceStatuses((prev) => {
             const next = [...prev];
             next[currentIndex] = "correct";
             return next;
           });
-
           if (isLastSentence) {
             setIsComplete(true);
           } else {
@@ -86,29 +102,24 @@ export function usePracticeEngine(sentences: PracticeSentence[]) {
             }, 400);
           }
         } else {
-          setCurrentWordIndex((i) => i + 1);
+          const nxt = nextRealWord(currentWordIndex);
+          if (nxt !== null) setCurrentWordIndex(nxt);
+          else setCurrentWordIndex(currentWordIndex + 1);
         }
       }, 500);
     } else {
-      // Error
       setFeedback("error");
       setCombo(0);
-
       setTimeout(() => {
         setFeedback(null);
         setInputValue("");
       }, 600);
     }
   }, [
-    currentWord,
-    inputValue,
-    feedback,
-    isLastWord,
-    isLastSentence,
-    currentIndex,
+    currentWord, currentWordIndex, inputValue, feedback,
+    isLastWord, isLastSentence, currentIndex, nextRealWord,
   ]);
 
-  // Reveal hint on Tab hold
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "Tab") {
@@ -116,7 +127,6 @@ export function usePracticeEngine(sentences: PracticeSentence[]) {
         setHintVisible(true);
         return;
       }
-
       if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
         submitWord();
@@ -127,9 +137,7 @@ export function usePracticeEngine(sentences: PracticeSentence[]) {
   );
 
   const handleKeyUp = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Tab") {
-      setHintVisible(false);
-    }
+    if (e.key === "Tab") setHintVisible(false);
   }, []);
 
   const handleInputChange = useCallback(
@@ -140,47 +148,19 @@ export function usePracticeEngine(sentences: PracticeSentence[]) {
     [feedback]
   );
 
-  // Focus input on mount and after sentence change
   const focusInput = useCallback(() => {
     inputRef.current?.focus();
   }, []);
 
-  // Accuracy
-  const accuracy =
-    totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
-
-  // Time elapsed
+  const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
 
   return {
-    // State
-    currentIndex,
-    currentWordIndex,
-    inputValue,
-    combo,
-    maxCombo,
-    hintVisible,
-    feedback,
-    sentenceStatuses,
-    currentSentence,
-    currentWord,
-    isLastSentence,
-    isLastWord,
-    totalCorrect,
-    totalAttempts,
-    accuracy,
-    elapsed,
-    isComplete,
-    total: sentences.length,
-
-    // Refs
+    currentIndex, currentWordIndex, inputValue, combo, maxCombo,
+    hintVisible, feedback, sentenceStatuses, currentSentence, currentWord,
+    isLastSentence, isLastWord, totalCorrect, totalAttempts,
+    accuracy, elapsed, isComplete, total: sentences.length,
     inputRef,
-
-    // Handlers
-    handleKeyDown,
-    handleKeyUp,
-    handleInputChange,
-    focusInput,
-    setCurrentIndex,
+    handleKeyDown, handleKeyUp, handleInputChange, focusInput, setCurrentIndex,
   };
 }

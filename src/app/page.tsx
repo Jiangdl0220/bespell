@@ -17,17 +17,19 @@ export default async function HomePage() {
   const user = userResults[0];
 
   return (
-    <div className="min-h-screen bgdot">
-      <div className="max-w-2xl mx-auto px-6 py-12">
-        <header className="flex items-center justify-between mb-10">
+    <div className="min-h-screen relative z-10">
+      <div className="max-w-2xl mx-auto px-6 py-14">
+        <header className="flex items-center justify-between mb-12">
           <div>
-            <h1 className="display text-3xl font-bold tracking-tight">BeSpell</h1>
-            <p className="text-xs opacity-40 mt-1">{user?.username}</p>
+            <h1 className="display text-4xl tracking-tight" style={{color:"var(--accent)"}}>BeSpell</h1>
+            <p className="text-xs mt-1" style={{color:"var(--text2)"}}>{user?.username}</p>
           </div>
           <LogoutButton />
         </header>
-        <Link href="/new" className="btn btn-primary w-full py-3.5 text-sm mb-8 tracking-wide">+ 新建课程</Link>
-        <h2 className="text-xs font-semibold opacity-40 uppercase tracking-[.15em] mb-4">我的课程</h2>
+        <Link href="/new" className="btn btn-primary w-full py-3.5 text-sm mb-10">
+          + 新建课程
+        </Link>
+        <h2 className="text-xs font-semibold uppercase tracking-[.15em] mb-5" style={{color:"var(--text2)"}}>我的课程</h2>
         <CourseList />
       </div>
     </div>

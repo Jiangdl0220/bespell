@@ -14,29 +14,40 @@ export default function DonePage() {
 
   return (
     <RequireAuth>
-    <div className="min-h-screen bgdot flex items-center justify-center p-6">
-      <div className="w-full max-w-sm text-center">
-        <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:"spring",stiffness:180,delay:.2}}
-          className="display text-5xl mb-6 tracking-widest" style={{color:"var(--accent)"}}>
-          {"★".repeat(starCount)}{"☆".repeat(5-starCount)}
-        </motion.div>
-        <h1 className="display text-2xl font-bold mb-2">很棒！</h1>
-        <p className="text-sm opacity-45 mb-10">正确率 {accuracy}%</p>
+    <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
+      <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="w-full max-w-sm text-center">
+        <div className="flex justify-center gap-1 mb-8">
+          {[1,2,3,4,5].map(i => (
+            <motion.span key={i} initial={{opacity:0,scale:0,y:-20}}
+              animate={{opacity:i<=starCount?1:.2,scale:i<=starCount?1:.6,y:0}}
+              transition={{delay:i*.08,type:"spring",stiffness:300}}
+              className="text-3xl">
+              {i<=starCount?"\u2b50":"\u2606"}
+            </motion.span>
+          ))}
+        </div>
 
-        <div className="grid grid-cols-2 gap-3 mb-10 anim-in">
-          {[{label:"正确",val:correct},{label:"尝试",val:attempts},{label:"连击",val:`×${combo}`},{label:"用时",val:`${m}:${String(s).padStart(2,"0")}`}].map(st=>(
-            <div key={st.label} className="card py-4 px-4">
-              <p className="text-xs opacity-45 uppercase tracking-wider mb-1">{st.label}</p>
-              <p className="text-xl font-bold tabular-nums">{st.val}</p>
+        <h1 className="display text-3xl mb-2" style={{color:"var(--accent)"}}>
+          {accuracy>=80?"\u592a\u68d2\u4e86\uff01":accuracy>=50?"\u8fd8\u4e0d\u9519":"\u7ee7\u7eed\u52a0\u6cb9"}
+        </h1>
+        <p className="text-sm mb-10" style={{color:"var(--text2)"}}>正确率 {accuracy}%</p>
+
+        <div className="grid grid-cols-3 gap-3 mb-10">
+          {[
+            {v:correct,l:"\u6b63\u786e"}, {v:combo,l:"\u6700\u9ad8\u8fde\u51fb"}, {v:`${m}:${String(s).padStart(2,"0")}`,l:"\u7528\u65f6"}
+          ].map(d => (
+            <div key={d.l} className="card py-3 px-2">
+              <div className="text-lg font-bold">{d.v}</div>
+              <div className="text-xs mt-0.5" style={{color:"var(--text2)"}}>{d.l}</div>
             </div>
           ))}
         </div>
 
-        <div className="space-y-3 anim-in">
-          <button onClick={()=>router.back()} className="btn btn-primary w-full py-3.5 text-sm tracking-wide">再来一次</button>
-          <button onClick={()=>router.push("/")} className="w-full text-xs opacity-40 hover:opacity-40 transition-opacity py-3">课程列表</button>
-        </div>
-      </div>
+        <button onClick={()=>router.back()} className="btn btn-primary w-full py-3.5 text-sm">再来一次</button>
+        <button onClick={()=>router.push("/")} className="w-full text-xs py-3 mt-2" style={{color:"var(--text2)"}}>
+          课程列表
+        </button>
+      </motion.div>
     </div>
     </RequireAuth>
   );

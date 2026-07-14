@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CourseCard from "@/components/course-card";
 
 interface Course {
@@ -12,10 +12,16 @@ export default function CourseList() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchCourses = useCallback(() => {
     fetch("/api/courses").then(r => r.json()).then(data => {
       if (Array.isArray(data)) setCourses(data);
     }).catch(console.error).finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => { fetchCourses(); }, [fetchCourses]);
+
+  const handleDelete = useCallback((id: string) => {
+    setCourses(prev => prev.filter(c => c.id !== id));
   }, []);
 
   if (loading) return (
@@ -36,7 +42,7 @@ export default function CourseList() {
 
   return (
     <div className="space-y-3">
-      {courses.map(course => <CourseCard key={course.id} {...course} />)}
+      {courses.map(course => <CourseCard key={course.id} {...course} onDelete={handleDelete} />)}
     </div>
   );
 }

@@ -37,11 +37,7 @@ export async function POST(req: NextRequest) {
   if (existing.length > 0) {
     await db
       .update(progress)
-      .set({
-        attempts,
-        correct,
-        lastSeen: new Date().toISOString(),
-      })
+      .set({ attempts, correct })
       .where(eq(progress.id, existing[0].id));
   } else {
     await db.insert(progress).values({
@@ -51,7 +47,6 @@ export async function POST(req: NextRequest) {
       sentenceIndex: sentenceIndex ?? 0,
       attempts: attempts ?? 1,
       correct: correct ?? 1,
-      lastSeen: new Date().toISOString(),
     });
   }
 

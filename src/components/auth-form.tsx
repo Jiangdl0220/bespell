@@ -21,38 +21,42 @@ export default function AuthForm({ mode }: AuthFormProps) {
       body: JSON.stringify({ username, password }),
     });
     const data = await res.json();
-    if (!res.ok) { setError(data.error || "请求失败"); setLoading(false); }
+    if (!res.ok) { setError(data.error || "\u8bf7\u6c42\u5931\u8d25"); setLoading(false); }
     else { router.push("/"); router.refresh(); }
   };
 
   return (
-    <div className="min-h-screen bgdot flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
       <div className="w-full max-w-sm">
-        <div className="text-center mb-10">
-          <h1 className="display text-4xl font-bold tracking-tight">BeSpell</h1>
-          <p className="mt-2 text-sm opacity-40">AI 英语拼写练习</p>
+        <div className="text-center mb-12">
+          <h1 className="display text-5xl tracking-tight" style={{color:"var(--accent)"}}>BeSpell</h1>
+          <p className="mt-3 text-sm" style={{color:"var(--text2)"}}>AI 英语拼写练习</p>
         </div>
-        <form onSubmit={handleSubmit} className="card px-8 py-8 space-y-6">
+        <form onSubmit={handleSubmit} className="card px-8 py-10 space-y-5">
           <div>
-            <label className="block text-xs font-semibold opacity-45 uppercase tracking-[.15em] mb-2">用户名</label>
+            <label className="block text-xs font-semibold uppercase tracking-[.12em] mb-2.5" style={{color:"var(--text2)"}}>
+              {isLogin ? "\u7528\u6237\u540d" : "\u7528\u6237\u540d"}
+            </label>
             <input type="text" value={username} onChange={e => setUsername(e.target.value)}
-              className="input" placeholder="输入用户名" required minLength={2} autoFocus />
+              className="input" placeholder={isLogin ? "\u8f93\u5165\u7528\u6237\u540d" : "\u8f93\u5165\u7528\u6237\u540d"} required minLength={2} autoFocus />
           </div>
           <div>
-            <label className="block text-xs font-semibold opacity-45 uppercase tracking-[.15em] mb-2">密码</label>
+            <label className="block text-xs font-semibold uppercase tracking-[.12em] mb-2.5" style={{color:"var(--text2)"}}>
+              {isLogin ? "\u5bc6\u7801" : "\u5bc6\u7801"}
+            </label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-              className="input" placeholder={isLogin ? "输入密码" : "6 位以上密码"} required minLength={6} />
+              className="input" placeholder={isLogin ? "\u8f93\u5165\u5bc6\u7801" : "6 \u4f4d\u4ee5\u4e0a\u5bc6\u7801"} required minLength={6} />
           </div>
           {error && <p className="text-xs font-medium" style={{color:"var(--red)"}}>{error}</p>}
           <button type="submit" disabled={loading}
-            className="btn btn-primary w-full py-3 text-sm disabled:opacity-30 tracking-wide">
-            {loading ? "请稍候..." : isLogin ? "登录" : "注册"}
+            className="btn btn-primary w-full py-3 text-sm disabled:opacity-30">
+            {loading ? "\u8bf7\u7a0d\u5019..." : isLogin ? "\u767b\u5f55" : "\u6ce8\u518c"}
           </button>
-          <div className="text-center">
+          <div className="text-center pt-1">
             <button type="button"
               onClick={() => router.push(isLogin ? "/register" : "/login")}
-              className="text-xs opacity-45 hover:opacity-50 transition-opacity">
-              {isLogin ? "没有账号？注册" : "已有账号？登录"}
+              className="text-xs hover:opacity-70 transition-opacity" style={{color:"var(--text2)"}}>
+              {isLogin ? "\u6ca1\u6709\u8d26\u53f7\uff1f\u6ce8\u518c" : "\u5df2\u6709\u8d26\u53f7\uff1f\u767b\u5f55"}
             </button>
           </div>
         </form>

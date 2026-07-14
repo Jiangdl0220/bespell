@@ -29,7 +29,7 @@ Format as JSON array:
   ]
 }]
 
-Important: The "words" array must split the English sentence word-by-word, preserving punctuation as separate entries. Example: "Hello, world!" becomes [{"en":"Hello","zh":"你好"}, {"en":",","zh":"，"}, {"en":"world","zh":"世界"}, {"en":",","zh":"！"}]
+Important: Include punctuation as separate entries in the "words" array (commas, periods, exclamation marks, question marks). Example: "Hello, world!" becomes [{"en":"Hello","zh":"你好"}, {"en":",","zh":""}, {"en":"world","zh":"世界"}, {"en":"!","zh":""}]
 
 Return ONLY the JSON array, nothing else.`;
 }
