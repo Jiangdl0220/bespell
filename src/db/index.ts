@@ -59,6 +59,29 @@ export async function getDb(): Promise<any> {
         created_at TEXT NOT NULL DEFAULT ''''
       )
     `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS battles (
+        id TEXT PRIMARY KEY,
+        course_id TEXT NOT NULL,
+        creator_id TEXT NOT NULL REFERENCES users(id),
+        opponent_id TEXT REFERENCES users(id),
+        room_code TEXT NOT NULL UNIQUE,
+        max_peeks INTEGER NOT NULL DEFAULT 5,
+        status TEXT NOT NULL DEFAULT ''waiting'',
+        winner_id TEXT,
+        created_at TEXT NOT NULL DEFAULT ''''
+      )
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS battle_results (
+        id TEXT PRIMARY KEY,
+        battle_id TEXT NOT NULL REFERENCES battles(id),
+        user_id TEXT NOT NULL REFERENCES users(id),
+        finished_at TIMESTAMP,
+        total_time INTEGER NOT NULL DEFAULT 0,
+        peek_count INTEGER NOT NULL DEFAULT 0
+      )
+    `;
     console.log("🔌 Using Neon Postgres (tables ready)");
 
     _db = drizzlePg(sql, { schema: pgSchema });

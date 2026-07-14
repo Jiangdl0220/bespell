@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionUserId } from "@/lib/auth";
 import { getDb } from "@/db";
-import { reviewWords } from "@/db/schema.pg";
+import { reviewWords } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";

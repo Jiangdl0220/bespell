@@ -46,3 +46,31 @@ export const reviewWords = pgTable("review_words", {
   source: text("source").notNull(), // "peek" | "saved"
   createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
 });
+
+export const battles = pgTable("battles", {
+  id: text("id").primaryKey(),
+  courseId: text("course_id").notNull(),
+  creatorId: text("creator_id")
+    .notNull()
+    .references(() => users.id),
+  opponentId: text("opponent_id")
+    .references(() => users.id),
+  roomCode: text("room_code").notNull().unique(),
+  maxPeeks: integer("max_peeks").notNull().default(5),
+  status: text("status").notNull().default("waiting"),
+  winnerId: text("winner_id"),
+  createdAt: timestamp("created_at", { mode: "string" }).notNull().defaultNow(),
+});
+
+export const battleResults = pgTable("battle_results", {
+  id: text("id").primaryKey(),
+  battleId: text("battle_id")
+    .notNull()
+    .references(() => battles.id),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id),
+  finishedAt: timestamp("finished_at", { mode: "string" }),
+  totalTime: integer("total_time").notNull().default(0),
+  peekCount: integer("peek_count").notNull().default(0),
+});

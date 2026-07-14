@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 interface CourseCardProps {
   id: string; title: string; scene: string; difficulty: string;
@@ -58,6 +58,21 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
           </span>
         </div>
         <p className="text-xs mt-3" style={{color:"var(--text2)"}}>{sentenceCount} 句 · 已完成 {completed} 句</p>
+
+        {/* Battle button */}
+        <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--border)" }}>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              router.push(`/battle?course=${id}`);
+            }}
+            className="text-xs flex items-center gap-1.5 opacity-40 hover:opacity-100 hover:text-[var(--accent)] transition-all"
+          >
+            <span>⚔️</span>
+            <span>发起挑战</span>
+          </button>
+        </div>
 
         {/* Delete: top-right, no overlap with badge due to pr-8 */}
         <button onClick={handleDelete} disabled={deleting}
