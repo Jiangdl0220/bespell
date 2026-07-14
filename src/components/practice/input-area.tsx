@@ -36,10 +36,11 @@ export default function InputArea({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="bg-white border border-[#1a1a1a]/8 px-6 py-5"
+      className="bg-white border border-[#1a1a1a]/8 px-6 py-8 relative cursor-text"
+      onClick={() => inputRef.current?.focus()}
     >
-      {/* Word underlines — one per word */}
-      <div className="flex items-center justify-center gap-3 flex-wrap mb-5">
+      {/* Word underlines — one per word, current one shows typed chars */}
+      <div className="flex items-center justify-center gap-3 flex-wrap mb-4">
         {Array.from({ length: totalWords }).map((_, i) => {
           const isCompleted = i < currentWordIndex;
           const isCurrent = i === currentWordIndex;
@@ -50,7 +51,7 @@ export default function InputArea({
                 key={i}
                 initial={{ opacity: 0, scale: 0.6 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center justify-center min-w-[2ch] h-7 text-xs font-semibold text-[#4a9c5d]"
+                className="inline-flex items-center justify-center min-w-[2ch] px-1 h-7 text-sm font-semibold text-[#4a9c5d]"
               >
                 {words[i]?.en}
               </motion.span>
@@ -71,8 +72,9 @@ export default function InputArea({
                 }
                 transition={{ duration: 0.3 }}
               >
+                {/* Typed characters above the underline */}
                 <span
-                  className="text-sm font-semibold transition-colors h-5"
+                  className="text-lg font-bold transition-colors h-7 flex items-center tracking-wide"
                   style={{
                     color:
                       feedback === "correct"
@@ -82,12 +84,17 @@ export default function InputArea({
                         : "#1a1a1a",
                   }}
                 >
-                  {inputValue || "\u00A0"}
+                  {inputValue || (
+                    <span className="inline-block w-1.5 h-5 bg-[#c98a2b] animate-pulse rounded-sm" />
+                  )}
                 </span>
+                {/* Underline */}
                 <span
                   className="block h-0.5 rounded-full transition-all duration-200"
                   style={{
-                    width: inputValue ? `${Math.max(inputValue.length * 8, 24)}px` : "24px",
+                    width: inputValue
+                      ? `${Math.max(inputValue.length * 11, 28)}px`
+                      : "28px",
                     backgroundColor:
                       feedback === "correct"
                         ? "#4a9c5d"
@@ -100,54 +107,34 @@ export default function InputArea({
             );
           }
 
-          // Upcoming word
+          // Upcoming word — just an underline placeholder
           return (
             <span
               key={i}
-              className="inline-block w-6 h-0.5 bg-[#1a1a1a]/10 align-middle"
+              className="inline-block w-7 h-0.5 bg-[#1a1a1a]/10 align-middle mt-6"
             />
           );
         })}
       </div>
 
-      {/* Input field */}
-      <div className={`relative ${feedback === "error" ? "shake" : ""}`}>
-        <input
-          ref={inputRef}
-          type="text"
-          value={inputValue}
-          onChange={onChange}
-          onKeyDown={onKeyDown}
-          onKeyUp={onKeyUp}
-          onFocus={onFocus}
-          className="w-full bg-transparent border-0 border-b border-[#1a1a1a]/10 px-0 py-2.5 text-lg text-center text-[#1a1a1a] placeholder-[#1a1a1a]/15 outline-none transition-colors focus:border-[#c98a2b]"
-          placeholder="输入英文..."
-          autoComplete="off"
-          autoCorrect="off"
-          autoCapitalize="off"
-          spellCheck="false"
-        />
+      {/* Hidden input for keyboard capture */}
+      <input
+        ref={inputRef}
+        type="text"
+        value={inputValue}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        onKeyUp={onKeyUp}
+        onFocus={onFocus}
+        className="absolute opacity-0 w-0 h-0 pointer-events-none"
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        spellCheck="false"
+      />
 
-        {/* Correct/error feedback */}
-        <AnimatePresence>
-          {feedback && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-base font-bold pointer-events-none"
-              style={{
-                color: feedback === "correct" ? "#4a9c5d" : "#c94b3a",
-              }}
-            >
-              {feedback === "correct" ? "✓" : "✗"}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Hint + instructions */}
-      <div className="flex items-center justify-between mt-3">
+      {/* Hint bar at bottom */}
+      <div className="flex items-center justify-between mt-2">
         <p className="text-xs text-[#1a1a1a]/25">
           空格确认 · Tab 偷看提示
         </p>
@@ -166,6 +153,23 @@ export default function InputArea({
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Feedback icon */}
+      <AnimatePresence>
+        {feedback && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            className="absolute top-3 right-3 text-lg font-bold pointer-events-none"
+            style={{
+              color: feedback === "correct" ? "#4a9c5d" : "#c94b3a",
+            }}
+          >
+            {feedback === "correct" ? "✓" : "✗"}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Shake animation */}
       <style jsx>{`
