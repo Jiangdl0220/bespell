@@ -27,10 +27,10 @@ export default function CourseList() {
   if (loading) return (
     <div className="space-y-3">
       {[1,2,3].map(i => (
-        <div key={i} className="card p-5 animate-pulse">
-          <div className="h-4 w-40 bg-white/10 mb-3"/>
-          <div className="h-3 w-24 bg-white/10 mb-3"/>
-          <div className="h-1 w-full bg-white/10"/>
+        <div key={i} className="card p-5 animate-pulse" style={{background:"var(--hover)"}}>
+          <div className="h-4 w-40 rounded mb-3" style={{background:"var(--border)"}}/>
+          <div className="h-3 w-24 rounded mb-3" style={{background:"var(--border)"}}/>
+          <div className="h-1 w-full rounded" style={{background:"var(--border)"}}/>
         </div>
       ))}
     </div>

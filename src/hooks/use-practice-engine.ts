@@ -23,7 +23,7 @@ export function isPunct(token: WordToken): boolean {
   return PUNCTUATION.has(token.en);
 }
 
-export function usePracticeEngine(sentences: PracticeSentence[]) {
+export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word: WordToken) => void) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
@@ -125,6 +125,9 @@ export function usePracticeEngine(sentences: PracticeSentence[]) {
       if (e.key === "Tab") {
         e.preventDefault();
         setHintVisible(true);
+        if (currentWord && !isPunct(currentWord) && onPeek) {
+          onPeek(currentWord);
+        }
         return;
       }
       if (e.key === " " || e.key === "Enter") {

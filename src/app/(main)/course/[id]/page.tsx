@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { usePracticeEngine, PracticeSentence } from "@/hooks/use-practice-engine";
+import { usePracticeEngine, PracticeSentence, WordToken } from "@/hooks/use-practice-engine";
 import PracticeHeader from "@/components/practice/header";
 import SentenceCard from "@/components/practice/sentence-card";
 import InputArea from "@/components/practice/input-area";
@@ -24,6 +24,7 @@ export default function PracticePage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [ipaVisible, setIpaVisible] = useState(true); // default show
+  const [savedWord, setSavedWord] = useState<string | null>(null);
 
   useEffect(() => {
     paramsPromise.then(({ id }) => {
@@ -50,7 +51,26 @@ export default function PracticePage({
       .finally(() => setLoading(false));
   }, [courseId]);
 
-  const engine = usePracticeEngine(course?.sentences ?? []);
+  // Ref to track current sentence index for the peek callback
+  const peekIdxRef = useRef(0);
+
+  const engine = usePracticeEngine(course?.sentences ?? [], useCallback((word: WordToken) => {
+    fetch("/api/review-words", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        wordEn: word.en,
+        wordZh: word.zh,
+        ipa: course?.sentences[peekIdxRef.current]?.ipa || null,
+        courseId,
+        courseTitle: course?.title || "",
+        source: "peek",
+      }),
+    }).catch(() => {});
+  }, [courseId, course?.title, course?.sentences]));
+
+  // Keep the ref in sync
+  peekIdxRef.current = engine.currentIndex;
 
   // Auto-focus on mount
   useEffect(() => {
@@ -114,6 +134,25 @@ export default function PracticePage({
     }
   }, [engine.currentSentence]);
 
+  const handleSaveWord = useCallback(() => {
+    const word = engine.currentWord;
+    if (!word || !courseId) return;
+    fetch("/api/review-words", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        wordEn: word.en,
+        wordZh: word.zh,
+        ipa: course?.sentences[engine.currentIndex]?.ipa || null,
+        courseId,
+        courseTitle: course?.title || "",
+        source: "saved",
+      }),
+    })
+      .then(() => setSavedWord(word.en))
+      .catch(() => {});
+  }, [engine.currentWord, courseId, course?.title, engine.currentIndex, course?.sentences]);
+
   if (loading) {
     return (
       <div className="min-h-screen bgdot flex items-center justify-center">
@@ -150,6 +189,24 @@ export default function PracticePage({
           onToggleIpa={toggleIpa}
           onSpeak={handleSpeak}
         />
+
+        {/* Save word button */}
+        {engine.currentWord && (
+          <div className="flex justify-end">
+            <button
+              onClick={handleSaveWord}
+              className="text-xs px-3 py-1.5 rounded-lg transition-all"
+              style={{
+                background: savedWord === engine.currentWord.en ? "var(--accent-bg)" : "var(--hover)",
+                color: savedWord === engine.currentWord.en ? "var(--accent)" : "var(--text3)",
+                border: "1px solid",
+                borderColor: savedWord === engine.currentWord.en ? "var(--accent)" : "transparent",
+              }}
+            >
+              {savedWord === engine.currentWord.en ? "已收藏" : "+ 加入生词本"}
+            </button>
+          </div>
+        )}
 
         <InputArea
           words={engine.currentSentence?.words ?? []}

@@ -29,8 +29,8 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
 
   return (
     <Link href={`/course/${id}`} className="block relative group/card">
-      <motion.div whileHover={{ y: -2 }} className="card p-5 cursor-pointer">
-        <div className="flex items-start justify-between mb-4">
+      <motion.div whileHover={{ y: -2 }} className="card p-5 cursor-pointer relative">
+        <div className="flex items-start justify-between mb-4 pr-8">
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-base truncate group-hover/card:opacity-80 transition-opacity">{title}</h3>
             <p className="text-xs mt-0.5 truncate" style={{color:"var(--text2)"}}>{scene}</p>
@@ -57,14 +57,16 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
             {progress}%
           </span>
         </div>
-        <div className="flex items-center justify-between mt-3">
-          <p className="text-xs" style={{color:"var(--text2)"}}>{sentenceCount} 句 · 已完成 {completed} 句</p>
-          <button onClick={handleDelete} disabled={deleting}
-            className="opacity-0 group-hover/card:opacity-30 hover:opacity-70! text-xs transition-opacity"
-            style={{color:"var(--red)"}}>
-            {deleting ? "..." : "\u2715"}
-          </button>
-        </div>
+        <p className="text-xs mt-3" style={{color:"var(--text2)"}}>{sentenceCount} 句 · 已完成 {completed} 句</p>
+
+        {/* Delete: top-right, no overlap with badge due to pr-8 */}
+        <button onClick={handleDelete} disabled={deleting}
+          className="absolute top-4 right-3 z-20 w-7 h-7 flex items-center justify-center rounded-lg text-sm font-bold
+            opacity-0 group-hover/card:opacity-40 hover:opacity-100! transition-all
+            hover:bg-black/5"
+          style={{color:"var(--red)"}}>
+          {deleting ? "\u00b7\u00b7\u00b7" : "\u2715"}
+        </button>
       </motion.div>
     </Link>
   );

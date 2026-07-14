@@ -46,6 +46,19 @@ export async function getDb(): Promise<any> {
         last_seen TIMESTAMP
       )
     `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS review_words (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL REFERENCES users(id),
+        word_en TEXT NOT NULL,
+        word_zh TEXT NOT NULL,
+        ipa TEXT,
+        course_id TEXT NOT NULL,
+        course_title TEXT NOT NULL,
+        source TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT ''''
+      )
+    `;
     console.log("🔌 Using Neon Postgres (tables ready)");
 
     _db = drizzlePg(sql, { schema: pgSchema });
