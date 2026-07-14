@@ -120,6 +120,7 @@ export default function PracticePage({
         <SentenceCard
           zh={engine.currentSentence?.zh ?? ""}
           ipa={engine.currentSentence?.ipa ?? ""}
+          words={engine.currentSentence?.words ?? []}
           ipaVisible={ipaVisible}
           onToggleIpa={toggleIpa}
           onSpeak={handleSpeak}
