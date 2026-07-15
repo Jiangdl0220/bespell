@@ -41,8 +41,8 @@ export default function ReviewContent() {
   };
 
   const tabs = [
-    { key: "peek" as const, label: "所思", desc: "练习中曾驻足的词" },
-    { key: "saved" as const, label: "所念", desc: "想要反复回味的词" },
+    { key: "peek" as const, label: "所思", desc: "练习中曾驻足的句" },
+    { key: "saved" as const, label: "所念", desc: "想要反复回味的句" },
   ];
 
   return (
@@ -86,8 +86,8 @@ export default function ReviewContent() {
         <div className="card p-12 text-center">
           <p className="text-sm opacity-40">
             {tab === "peek"
-              ? "练习中 Tab 窥探的单词会出现在这里"
-              : "练习中收藏的单词会出现在这里"}
+              ? "练习中 Tab 窥探的句子会出现在这里"
+              : "练习中收藏的句子会出现在这里"}
           </p>
         </div>
       ) : (
