@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import CourseList from "@/app/course-list";
-import CourseLibrary from "@/components/course-library";
 import CourseCreator from "@/components/course-creator";
+
+const CourseLibrary = lazy(() => import("@/components/course-library"));
 
 type Tab = "mine" | "library";
 
@@ -99,7 +100,9 @@ export default function CoursesPageContent() {
               </div>
             )}
 
-            <CourseLibrary />
+            <Suspense fallback={<div className="text-center py-8 text-sm opacity-40">加载中...</div>}>
+              <CourseLibrary />
+            </Suspense>
           </div>
         )}
       </motion.div>

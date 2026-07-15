@@ -7,49 +7,45 @@ import presetData from "@/db/preset-courses";
 
 export const dynamic = "force-dynamic";
 
-let seeded = false;
+// Server-side cache — preset courses don't change between deploys
+let _cache: { courses: any[]; categories: string[]; difficulties: string[] } | null = null;
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category");
   const difficulty = searchParams.get("difficulty");
 
+  // Return cached data if available (skip DB query)
+  if (_cache) {
+    let filtered = _cache.courses;
+    if (category) filtered = filtered.filter((c: any) => c.category === category);
+    if (difficulty) filtered = filtered.filter((c: any) => c.difficulty === difficulty);
+    return NextResponse.json({ courses: filtered, categories: _cache.categories, difficulties: _cache.difficulties });
+  }
+
   const db = await getDb();
 
   try {
-    // Seed preset courses on first access
-    if (!seeded) {
-      const existing = await db.select().from(presetCourses).limit(1);
-      if (existing.length === 0) {
-        for (const course of presetData) {
-          await db.insert(presetCourses).values({
-            id: uuid(),
-            category: course.category,
-            title: course.title,
-            scene: course.scene,
-            difficulty: course.difficulty,
-            sentences: JSON.stringify(course.sentences),
-            sentenceCount: course.sentences.length,
-          });
-        }
-        console.log(`📚 Seeded ${presetData.length} preset courses via library API`);
+    // Seed preset courses on first access (only needed once per deployment)
+    const existing = await db.select().from(presetCourses).limit(1);
+    if (existing.length === 0) {
+      for (const course of presetData) {
+        await db.insert(presetCourses).values({
+          id: uuid(),
+          category: course.category,
+          title: course.title,
+          scene: course.scene,
+          difficulty: course.difficulty,
+          sentences: JSON.stringify(course.sentences),
+          sentenceCount: course.sentences.length,
+        });
       }
-      seeded = true;
+      console.log(`📚 Seeded ${presetData.length} preset courses via library API`);
     }
 
-    const query: any = db.select().from(presetCourses).orderBy(asc(presetCourses.category), asc(presetCourses.difficulty));
+    const all = await db.select().from(presetCourses).orderBy(asc(presetCourses.category), asc(presetCourses.difficulty));
 
-    const all = await query;
-
-    let filtered = all;
-    if (category) {
-      filtered = filtered.filter((c: any) => c.category === category);
-    }
-    if (difficulty) {
-      filtered = filtered.filter((c: any) => c.difficulty === difficulty);
-    }
-
-    const list = filtered.map((c: any) => ({
+    const list = all.map((c: any) => ({
       id: c.id,
       category: c.category,
       title: c.title,
@@ -59,10 +55,17 @@ export async function GET(req: NextRequest) {
       createdAt: c.createdAt,
     }));
 
-    const categories = [...new Set(all.map((c: any) => c.category))];
-    const difficulties = [...new Set(all.map((c: any) => c.difficulty))];
+    const categories = [...new Set(all.map((c: any) => c.category))] as string[];
+    const difficulties = [...new Set(all.map((c: any) => c.difficulty))] as string[];
 
-    return NextResponse.json({ courses: list, categories, difficulties });
+    // Populate cache
+    _cache = { courses: list, categories, difficulties };
+
+    let filtered = list;
+    if (category) filtered = filtered.filter((c: any) => c.category === category);
+    if (difficulty) filtered = filtered.filter((c: any) => c.difficulty === difficulty);
+
+    return NextResponse.json({ courses: filtered, categories, difficulties });
   } catch {
     return NextResponse.json({ courses: [], categories: [], difficulties: [] });
   }
