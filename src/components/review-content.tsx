@@ -48,7 +48,7 @@ export default function ReviewContent() {
   return (
     <div className="page-container">
       <h1 className="display text-3xl mb-2" style={{ color: "var(--accent)" }}>
-        复习
+        温故
       </h1>
 
       {/* Tabs */}
