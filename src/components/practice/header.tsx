@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 
 interface PracticeHeaderProps {
@@ -7,11 +8,24 @@ interface PracticeHeaderProps {
 }
 
 export default function PracticeHeader({ title, difficulty, currentIndex, total, combo }: PracticeHeaderProps) {
+  const router = useRouter();
   const pct = Math.round((currentIndex/total)*100);
 
   return (
     <header className="sticky top-0 z-20" style={{background:"var(--bg)"}}>
       <div className="max-w-5xl mx-auto px-6 py-4">
+        {/* Back button */}
+        <button
+          onClick={() => router.push("/courses")}
+          className="text-xs mb-3 flex items-center gap-1 transition-all hover:opacity-60"
+          style={{ color: "var(--text2)" }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          <span>词海</span>
+        </button>
+
         <div className="flex items-center justify-between mb-3">
           <div className="min-w-0 flex-1 mr-4">
             <h1 className="text-sm font-semibold truncate">{title}</h1>
