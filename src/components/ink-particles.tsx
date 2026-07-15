@@ -5,7 +5,7 @@ import * as THREE from "three";
 
 // Floating Chinese ink particles — mesh-based for proper alpha
 const CHARS = ["补", "白", "词", "海", "印", "墨"];
-const PARTICLE_COUNT = 32;
+const PARTICLE_COUNT = 18;
 
 export default function InkParticles() {
   const containerRef = useRef<HTMLDivElement>(null);

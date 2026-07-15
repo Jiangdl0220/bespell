@@ -157,21 +157,6 @@ export default function CourseLibrary() {
                   background: "linear-gradient(135deg, #ffffff 0%, #f8faf7 40%, #f0f5ee 100%)",
                 }}
               >
-                {/* Watermark char */}
-                <span
-                  className="absolute select-none pointer-events-none"
-                  style={{
-                    right: -4,
-                    bottom: -8,
-                    fontSize: 72,
-                    fontFamily: "'Ma Shan Zheng', 'Noto Serif SC', serif",
-                    color: "rgba(45,138,78,0.035)",
-                    lineHeight: 1,
-                  }}
-                >
-                  补
-                </span>
-
                 <div className="flex items-center gap-2 mb-2.5 relative z-10">
                   <h3 className="font-bold text-sm truncate flex-1 min-w-0" style={{ color: "var(--text)" }}>{course.title}</h3>
                   <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0"
