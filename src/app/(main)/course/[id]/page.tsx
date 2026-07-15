@@ -254,7 +254,14 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
           {/* Review mode: next button */}
           {mode === "spell" && isReview && (
             <div className="flex justify-center gap-3 pt-2">
-              <button onClick={() => spellEngine.jumpTo?.(spellEngine.currentIndex + 1)} className="px-5 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-80" style={{ background: "var(--accent)", color: "white" }}>
+              <button
+                onClick={() => {
+                  const next = spellEngine.nextUncompleted;
+                  if (typeof next === "number") spellEngine.jumpTo?.(next);
+                }}
+                className="px-5 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-80"
+                style={{ background: "var(--accent)", color: "white" }}
+              >
                 {spellEngine.currentIndex + 1 >= course.total ? "终" : "续行"}
               </button>
             </div>

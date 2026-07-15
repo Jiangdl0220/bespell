@@ -162,7 +162,8 @@ export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word:
 
   // Jump to a sentence index (only if completed or current next)
   const completed = sentenceStatuses.map((s, i) => s === "correct" || (completedSet?.has(i) ?? false));
-  const nextUncompleted = completed.lastIndexOf(false) >= 0 ? completed.lastIndexOf(false) : sentences.length;
+  const firstUncompleted = completed.indexOf(false);
+  const nextUncompleted = firstUncompleted >= 0 ? firstUncompleted : sentences.length;
   const canJumpTo = (i: number) => i === currentIndex || completed[i] || i === nextUncompleted;
 
   const jumpTo = useCallback((i: number) => {
