@@ -23,8 +23,8 @@ export function isPunct(token: WordToken): boolean {
   return PUNCTUATION.has(token.en);
 }
 
-export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word: WordToken) => void) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word: WordToken) => void, startIndex = 0, completedSet?: Set<number>) {
+  const [currentIndex, setCurrentIndex] = useState(startIndex);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [inputValue, setInputValue] = useState("");
   const [combo, setCombo] = useState(0);
@@ -32,7 +32,7 @@ export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word:
   const [hintVisible, setHintVisible] = useState(false);
   const [feedback, setFeedback] = useState<FeedbackType>(null);
   const [sentenceStatuses, setSentenceStatuses] = useState<SentenceStatus[]>(
-    () => sentences.map(() => "pending")
+    () => sentences.map((_, i) => completedSet?.has(i) ? "correct" : "pending")
   );
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [totalAttempts, setTotalAttempts] = useState(0);
@@ -160,12 +160,29 @@ export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word:
   const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
   const elapsed = Math.floor((Date.now() - startTime) / 1000);
 
+  // Jump to a sentence index (only if completed or current next)
+  const completed = sentenceStatuses.map((s, i) => s === "correct" || (completedSet?.has(i) ?? false));
+  const nextUncompleted = completed.lastIndexOf(false) >= 0 ? completed.lastIndexOf(false) : sentences.length;
+  const canJumpTo = (i: number) => i === currentIndex || completed[i] || i === nextUncompleted;
+
+  const jumpTo = useCallback((i: number) => {
+    if (i < 0 || i >= sentences.length || !canJumpTo(i)) return;
+    setCurrentIndex(i);
+    setCurrentWordIndex(0);
+    setInputValue("");
+    setHintVisible(false);
+    setFeedback(null);
+  }, [sentences.length, canJumpTo]);
+
+  // Check completeness whenever statuses change
+  const allCorrect = sentenceStatuses.every(s => s === "correct");
+
   return {
     currentIndex, currentWordIndex, inputValue, combo, maxCombo,
     hintVisible, feedback, sentenceStatuses, currentSentence, currentWord,
     isLastSentence, isLastWord, totalCorrect, totalAttempts,
-    accuracy, elapsed, isComplete, total: sentences.length,
-    inputRef,
+    accuracy, elapsed, isComplete: isComplete || allCorrect, total: sentences.length,
+    inputRef, completed, nextUncompleted, jumpTo,
     handleKeyDown, handleKeyUp, handleInputChange, focusInput, setCurrentIndex,
   };
 }

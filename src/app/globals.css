@@ -332,4 +332,6 @@
     .sidebar-open + .sidebar-overlay,
     .sidebar-overlay { display: block; }
   }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }

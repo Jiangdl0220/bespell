@@ -3,16 +3,16 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { usePracticeEngine, PracticeSentence, WordToken } from "@/hooks/use-practice-engine";
+import { usePracticeEngine, PracticeSentence, WordToken, isPunct } from "@/hooks/use-practice-engine";
 import { useDictationEngine } from "@/hooks/use-dictation-engine";
 import PracticeHeader from "@/components/practice/header";
 import SentenceCard from "@/components/practice/sentence-card";
+import SentenceNav from "@/components/practice/sentence-nav";
 import InputArea from "@/components/practice/input-area";
 import { speak } from "@/components/voice-selector";
 import RequireAuth from "@/components/require-auth";
 
 type PracticeMode = "spell" | "dictation";
-
 const MODE_LABELS: Record<PracticeMode, string> = { spell: "落笔", dictation: "聆音" };
 
 function getInitialMode(): PracticeMode {
@@ -46,27 +46,14 @@ function DictationArea({ engine, answerRevealed }: { engine: ReturnType<typeof u
         onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); engine.submitted ? engine.nextSentence() : engine.submitAndCheck(); }}}
         placeholder="输入你听到的英文句子..." rows={3} disabled={engine.submitted}
         className="w-full resize-none rounded-xl p-4 text-base leading-relaxed outline-none transition-all border"
-        style={{
-          background: "var(--card)", color: "var(--text)",
-          borderColor: engine.submitted ? (engine.isCorrect ? "var(--accent)" : "var(--red)") : "var(--border)",
-          fontFamily: "'Inter Tight', system-ui, sans-serif",
-        }}
+        style={{ background: "var(--card)", color: "var(--text)", borderColor: engine.submitted ? (engine.isCorrect ? "var(--accent)" : "var(--red)") : "var(--border)", fontFamily: "'Inter Tight', system-ui, sans-serif" }}
         autoFocus
       />
       {engine.submitted && (
         <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
-          <span className="text-sm font-semibold" style={{ color: engine.isCorrect ? "var(--accent)" : "var(--red)" }}>
-            {engine.isCorrect ? "✓ 正确" : "✗ 再看一次"}
-          </span>
-          {answerRevealed && !engine.isCorrect && (
-            <span className="text-sm" style={{ color: "var(--text2)" }}>答案：{engine.currentSentence?.en}</span>
-          )}
-          {engine.submitted && (
-            <button onClick={engine.nextSentence} className="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all hover:opacity-80"
-              style={{ background: "var(--accent)", color: "white" }}>
-              {engine.done ? "终" : "续行"}
-            </button>
-          )}
+          <span className="text-sm font-semibold" style={{ color: engine.isCorrect ? "var(--accent)" : "var(--red)" }}>{engine.isCorrect ? "✓ 正确" : "✗ 再看一次"}</span>
+          {answerRevealed && !engine.isCorrect && <span className="text-sm" style={{ color: "var(--text2)" }}>答案：{engine.currentSentence?.en}</span>}
+          <button onClick={engine.nextSentence} className="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all hover:opacity-80" style={{ background: "var(--accent)", color: "white" }}>{engine.done ? "终" : "续行"}</button>
         </motion.div>
       )}
     </div>
@@ -83,19 +70,42 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
   const [ipaVisible, setIpaVisible] = useState(true);
   const [savedWord, setSavedWord] = useState<string | null>(null);
 
+  // Progress data
+  const [completedSet, setCompletedSet] = useState<Set<number>>(new Set());
+  const [startIdx, setStartIdx] = useState(0);
+
   // Params
   useEffect(() => { paramsPromise.then(({ id }) => setCourseId(id)); }, [paramsPromise]);
 
   // Read mode from URL
   useEffect(() => { setMode(getInitialMode()); }, []);
 
-  // Load course
+  // Load course + progress
   useEffect(() => {
     if (!courseId) return;
-    fetch(`/api/courses/${courseId}`).then(r => r.json()).then(data => {
-      if (data.error) setError(data.error); else setCourse(data);
+    Promise.all([
+      fetch(`/api/courses/${courseId}`).then(r => r.json()),
+      fetch(`/api/progress?courseId=${courseId}`).then(r => r.json()).catch(() => []),
+    ]).then(([courseData, progressData]) => {
+      if (courseData.error) setError(courseData.error); else setCourse(courseData);
       const saved = localStorage.getItem("bespell-ipa-visible");
       if (saved !== null) setIpaVisible(saved === "true");
+
+      // Parse progress
+      const doneIndices = new Set<number>();
+      if (Array.isArray(progressData)) {
+        progressData.forEach((p: { sentenceIndex: number }) => doneIndices.add(p.sentenceIndex));
+      }
+      setCompletedSet(doneIndices);
+
+      // Start from first uncompleted
+      const next = courseData?.sentences ? (() => {
+        for (let i = 0; i < courseData.sentences.length; i++) {
+          if (!doneIndices.has(i)) return i;
+        }
+        return 0;
+      })() : 0;
+      setStartIdx(next);
     }).catch(() => setError("加载课程失败")).finally(() => setLoading(false));
   }, [courseId]);
 
@@ -103,7 +113,7 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
   const peekIdxRef = useRef(0);
   const spellEngine = usePracticeEngine(course?.sentences ?? [], useCallback((word: WordToken) => {
     fetch("/api/review-words", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ wordEn: word.en, wordZh: word.zh, ipa: course?.sentences[peekIdxRef.current]?.ipa || null, courseId, courseTitle: course?.title || "", source: "peek" }) }).catch(() => {});
-  }, [courseId, course?.title, course?.sentences]));
+  }, [courseId, course?.title, course?.sentences]), startIdx, completedSet);
   peekIdxRef.current = spellEngine.currentIndex;
 
   // ----- Dictation engine -----
@@ -118,7 +128,6 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
     }
   }, [mode, dictationEngine.currentIndex]);
 
-  // Reveal answer after submit in dictation
   useEffect(() => { setDictAnswerRevealed(dictationEngine.submitted && !dictationEngine.isCorrect); }, [dictationEngine.submitted, dictationEngine.isCorrect]);
 
   // Auto-focus spell
@@ -140,7 +149,12 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
     router.push(`/course/${courseId}/done?${new URLSearchParams({ correct: String(spellEngine.totalCorrect), attempts: String(spellEngine.totalAttempts), accuracy: String(spellEngine.accuracy), combo: String(spellEngine.maxCombo), time: String(spellEngine.elapsed) }).toString()}`);
   }, [spellEngine.isComplete, courseId, mode]);
 
-  // Handlers
+  // Dictation completion
+  useEffect(() => {
+    if (mode !== "dictation" || !dictationEngine.done || !courseId) return;
+    router.push(`/course/${courseId}/done?mode=dictation`);
+  }, [dictationEngine.done, courseId, mode]);
+
   const handleModeChange = (m: PracticeMode) => {
     setMode(m);
     const url = new URL(window.location.href);
@@ -163,10 +177,12 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
     fetch("/api/review-words", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ wordEn: word.en, wordZh: word.zh, ipa: course?.sentences[spellEngine.currentIndex]?.ipa || null, courseId, courseTitle: course?.title || "", source: "saved" }) }).then(() => setSavedWord(word.en)).catch(() => {});
   }, [spellEngine.currentWord, courseId, course?.title, spellEngine.currentIndex, course?.sentences]);
 
-  // Derived
   const currentSentence = mode === "dictation" ? dictationEngine.currentSentence : spellEngine.currentSentence;
   const currentIndex = mode === "dictation" ? dictationEngine.currentIndex : spellEngine.currentIndex;
   const done = mode === "dictation" ? dictationEngine.done : spellEngine.isComplete;
+
+  // Is current sentence already completed? (Review mode)
+  const isReview = mode === "spell" && completedSet.has(spellEngine.currentIndex);
 
   if (loading) return <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}><div className="animate-pulse text-lg opacity-45">加载中...</div></div>;
   if (error || !course) return <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}><p style={{ color: "var(--red)" }}>{error || "课程不存在"}</p></div>;
@@ -177,6 +193,23 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
         <PracticeHeader title={course.title} difficulty={course.difficulty} currentIndex={currentIndex} total={course.total} combo={mode === "spell" ? spellEngine.combo : 0} />
         <main className="w-full max-w-2xl mx-auto px-4 py-6 space-y-5">
           <ModeTabs mode={mode} onChange={handleModeChange} />
+
+          {/* Sentence navigation dots */}
+          {mode === "spell" && (
+            <>
+              <SentenceNav
+                total={course.total}
+                currentIndex={spellEngine.currentIndex}
+                completed={spellEngine.completed || []}
+                nextUncompleted={spellEngine.nextUncompleted ?? course.total}
+                onJump={spellEngine.jumpTo || (() => {})}
+              />
+              <p className="text-xs text-center" style={{ color: "var(--text3)" }}>
+                {spellEngine.currentIndex + 1} / {course.total}
+                {isReview && <span className="ml-2" style={{ color: "var(--accent)" }}>· 已阅</span>}
+              </p>
+            </>
+          )}
 
           {mode !== "dictation" && currentSentence && (
             <SentenceCard zh={currentSentence.zh ?? ""} ipa={currentSentence.ipa ?? ""} ipaVisible={ipaVisible} onToggleIpa={toggleIpa} onSpeak={handleSpeak} />
@@ -193,7 +226,19 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
             </div>
           )}
 
-          {mode === "spell" && spellEngine.currentWord && (
+          {/* Review mode: show full sentence text */}
+          {mode === "spell" && isReview && currentSentence && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="card p-5 text-center">
+              <p className="text-lg font-semibold leading-relaxed" style={{ color: "var(--text)", fontFamily: "'Inter Tight', system-ui, sans-serif" }}>
+                {currentSentence.words.map((w, i) =>
+                  isPunct(w) ? <span key={i} className="opacity-40">{w.en}</span> : <span key={i} className="mx-0.5">{w.en}</span>
+                )}
+              </p>
+            </motion.div>
+          )}
+
+          {/* Normal spell input (not review mode) */}
+          {mode === "spell" && !isReview && spellEngine.currentWord && (
             <div className="flex justify-end">
               <button onClick={handleSaveWord} className="text-xs px-3 py-1.5 rounded-lg transition-all"
                 style={{ background: savedWord === spellEngine.currentWord.en ? "var(--accent-bg)" : "var(--hover)", color: savedWord === spellEngine.currentWord.en ? "var(--accent)" : "var(--text3)", border: "1px solid", borderColor: savedWord === spellEngine.currentWord.en ? "var(--accent)" : "transparent" }}>
@@ -202,13 +247,22 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
             </div>
           )}
 
-          {mode === "spell" && (
+          {mode === "spell" && !isReview && (
             <InputArea words={currentSentence?.words ?? []} currentWordIndex={spellEngine.currentWordIndex} inputValue={spellEngine.inputValue} hintVisible={spellEngine.hintVisible} feedback={spellEngine.feedback} inputRef={spellEngine.inputRef} onKeyDown={spellEngine.handleKeyDown} onKeyUp={spellEngine.handleKeyUp} onChange={spellEngine.handleInputChange} onFocus={spellEngine.focusInput} />
+          )}
+
+          {/* Review mode: next button */}
+          {mode === "spell" && isReview && (
+            <div className="flex justify-center gap-3 pt-2">
+              <button onClick={() => spellEngine.jumpTo?.(spellEngine.currentIndex + 1)} className="px-5 py-2 rounded-lg text-sm font-semibold transition-all hover:opacity-80" style={{ background: "var(--accent)", color: "white" }}>
+                {spellEngine.currentIndex + 1 >= course.total ? "终" : "续行"}
+              </button>
+            </div>
           )}
 
           {mode === "dictation" && <DictationArea engine={dictationEngine} answerRevealed={dictAnswerRevealed} />}
 
-          {done && mode !== "spell" && (
+          {done && (
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card p-8 text-center">
               <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif", color: "var(--accent)" }}>一课终了</h2>
               <button onClick={() => router.push(`/course/${courseId}/done?mode=${mode}`)} className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:opacity-80" style={{ background: "var(--accent)", color: "white" }}>览卷</button>
