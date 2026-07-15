@@ -146,6 +146,11 @@
     padding: 24px 20px 20px;
     cursor: pointer;
   }
+  .sidebar-brand-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
   .sidebar-logo {
     font-family: "Playfair Display", "Georgia", serif;
     font-weight: 700;

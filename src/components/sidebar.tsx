@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { IconBook, IconRefresh, IconSwords, IconUser, IconLogOut } from "@/components/icons";
+import { Logo } from "@/components/logo";
 
 const navItems = [
   { label: "课程", href: "/courses", Icon: IconBook },
@@ -62,7 +63,10 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside className={`sidebar ${open ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand" onClick={() => router.push("/courses")}>
-          <span className="sidebar-logo">BeSpell</span>
+          <div className="sidebar-brand-row">
+            <Logo size={26} />
+            <span className="sidebar-logo">BeSpell</span>
+          </div>
           <span className="sidebar-slogan">一词一世界</span>
         </div>
 

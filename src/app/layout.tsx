@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "BeSpell — 一词一世界",
   description: "AI 英语拼写练习 · 看中文拼英文 · 一词一世界",
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='1' y='1' width='30' height='30' rx='8' fill='%232d8a4e'/><path d='M16 9v14M16 9h5a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-5M16 17h6a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-6' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/><circle cx='24' cy='8' r='1.6' fill='white' opacity='.7'/></svg>",
+  },
 };
 
 export default function RootLayout({
