@@ -73,7 +73,7 @@ function PracticeInner({
   const router = useRouter();
   const [mode, setMode] = useState<PracticeMode>(initialMode);
   const [ipaVisible, setIpaVisible] = useState(true);
-  const [savedWord, setSavedWord] = useState<string | null>(null);
+  const [savedWords, setSavedWords] = useState<Set<string>>(new Set());
   const [dictAnswerRevealed, setDictAnswerRevealed] = useState(false);
 
   useEffect(() => {
@@ -152,12 +152,12 @@ function PracticeInner({
 
   const handleSaveWord = useCallback(() => {
     const word = spellEngine.currentWord;
-    if (!word) return;
+    if (!word || savedWords.has(word.en)) return;
     fetch("/api/review-words", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ wordEn: word.en, wordZh: word.zh, ipa: course.sentences[spellEngine.currentIndex]?.ipa || null, courseId, courseTitle: course.title, source: "saved" })
-    }).then(() => setSavedWord(word.en)).catch(() => {});
-  }, [spellEngine.currentWord, courseId, course.title, spellEngine.currentIndex, course.sentences]);
+    }).then(() => setSavedWords(prev => new Set(prev).add(word.en))).catch(() => {});
+  }, [spellEngine.currentWord, courseId, course.title, spellEngine.currentIndex, course.sentences, savedWords]);
 
   const currentSentence = mode === "dictation" ? dictationEngine.currentSentence : spellEngine.currentSentence;
   const currentIndex = mode === "dictation" ? dictationEngine.currentIndex : spellEngine.currentIndex;
@@ -208,8 +208,8 @@ function PracticeInner({
         {mode === "spell" && !isReview && spellEngine.currentWord && (
           <div className="flex justify-end">
             <button onClick={handleSaveWord} className="text-xs px-3 py-1.5 rounded-lg transition-all"
-              style={{ background: savedWord === spellEngine.currentWord.en ? "var(--accent-bg)" : "var(--hover)", color: savedWord === spellEngine.currentWord.en ? "var(--accent)" : "var(--text3)", border: "1px solid", borderColor: savedWord === spellEngine.currentWord.en ? "var(--accent)" : "transparent" }}>
-              {savedWord === spellEngine.currentWord.en ? "已收藏" : "+ 珍藏"}
+                style={{ background: savedWords.has(spellEngine.currentWord.en) ? "var(--accent-bg)" : "var(--hover)", color: savedWords.has(spellEngine.currentWord.en) ? "var(--accent)" : "var(--text3)", border: "1px solid", borderColor: savedWords.has(spellEngine.currentWord.en) ? "var(--accent)" : "transparent" }}>
+                {savedWords.has(spellEngine.currentWord.en) ? "已收藏" : "+ 珍藏"}
             </button>
           </div>
         )}
