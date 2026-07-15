@@ -42,29 +42,34 @@ export default function AuthForm({ mode: initialMode }: AuthFormProps) {
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-          style={{ color: "var(--accent)" }}
+          className="flex items-center justify-center gap-5 mb-12"
         >
-          <div className="flex justify-center mb-3">
-            <Logo size={52} />
+          {/* Module A: Logo */}
+          <div className="shrink-0" style={{ color: "var(--accent)" }}>
+            <Logo size={56} />
           </div>
-          <h1
-            className="text-4xl font-bold tracking-[.15em] mt-4"
-            style={{
-              fontFamily: "'ZCOOL QingKe HuangYou', serif",
-            }}
-          >
-            补白
-          </h1>
-          <p
-            className="text-base tracking-[.2em] mt-2"
-            style={{
-              fontFamily: "'Ma Shan Zheng', serif",
-              color: "var(--text2)",
-            }}
-          >
-            白处生词
-          </p>
+
+          {/* Module B: Title + Slogan */}
+          <div>
+            <h1
+              className="text-4xl font-bold tracking-[.15em] leading-none"
+              style={{
+                fontFamily: "'ZCOOL QingKe HuangYou', serif",
+                color: "var(--accent)",
+              }}
+            >
+              补白
+            </h1>
+            <p
+              className="text-base tracking-[.2em] mt-1.5"
+              style={{
+                fontFamily: "'Ma Shan Zheng', serif",
+                color: "var(--text2)",
+              }}
+            >
+              白处生词
+            </p>
+          </div>
         </motion.div>
 
         {/* Mode tabs — unified style */}
