@@ -76,21 +76,38 @@ export default function VoiceSelector() {
   );
 }
 
+// Cache voices globally so they're available immediately on all pages
+let _cachedVoices: SpeechSynthesisVoice[] | null = null;
+
+function getVoices(): SpeechSynthesisVoice[] {
+  if (_cachedVoices && _cachedVoices.length > 0) return _cachedVoices;
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return [];
+  const fresh = window.speechSynthesis.getVoices();
+  if (fresh.length > 0) _cachedVoices = fresh;
+  return fresh;
+}
+
+// Preload voices on first import
+if (typeof window !== "undefined" && "speechSynthesis" in window) {
+  speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged = () => {
+    _cachedVoices = speechSynthesis.getVoices();
+  };
+}
+
 // Helper to speak with stored voice preference
 export function speak(text: string, rate = 0.85) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   const synth = window.speechSynthesis;
-  // Pause any ongoing speech without distorting the next utterance
-  if (synth.speaking || synth.pending) synth.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-US";
   utterance.rate = rate;
+  utterance.volume = 1;
   const preferred = localStorage.getItem("bespell-voice");
   if (preferred) {
-    const voices = synth.getVoices();
+    const voices = getVoices();
     const match = voices.find((v) => v.name === preferred);
     if (match) utterance.voice = match;
   }
-  // Queue directly — cancel is synchronous enough here
   synth.speak(utterance);
 }

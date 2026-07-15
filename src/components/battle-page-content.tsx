@@ -18,7 +18,7 @@ export default function BattlePageContent() {
   return (
     <div className="page-container">
       <h1 className="display text-3xl mb-6" style={{ color: "var(--accent)" }}>
-        竞技
+        对弈
       </h1>
 
       {mode === "choose" && (

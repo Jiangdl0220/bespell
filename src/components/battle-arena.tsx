@@ -149,7 +149,7 @@ export default function BattleArena({
     <div className="min-h-screen" style={{ background: "var(--bg)" }}>
       <PracticeHeader
         title={course.title}
-        difficulty="⚔️ 竞技"
+        difficulty="对弈"
         currentIndex={engine.currentIndex}
         total={course.total}
         combo={engine.combo}
