@@ -73,7 +73,7 @@ function PracticeInner({
   const router = useRouter();
   const [mode, setMode] = useState<PracticeMode>(initialMode);
   const [ipaVisible, setIpaVisible] = useState(true);
-  const [savedWords, setSavedWords] = useState<Set<string>>(new Set());
+  const [savedSentences, setSavedSentences] = useState<Set<number>>(new Set());
   const [dictAnswerRevealed, setDictAnswerRevealed] = useState(false);
 
   useEffect(() => {
@@ -150,14 +150,19 @@ function PracticeInner({
     if (en) speak(en);
   }, [spellEngine.currentSentence]);
 
-  const handleSaveWord = useCallback(() => {
-    const word = spellEngine.currentWord;
-    if (!word || savedWords.has(word.en)) return;
-    fetch("/api/review-words", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ wordEn: word.en, wordZh: word.zh, ipa: course.sentences[spellEngine.currentIndex]?.ipa || null, courseId, courseTitle: course.title, source: "saved" })
-    }).then(() => setSavedWords(prev => new Set(prev).add(word.en))).catch(() => {});
-  }, [spellEngine.currentWord, courseId, course.title, spellEngine.currentIndex, course.sentences, savedWords]);
+  // Save all words in the current sentence to wordbook
+  const handleSaveSentence = useCallback(() => {
+    const sentence = course.sentences[spellEngine.currentIndex];
+    if (!sentence || savedSentences.has(spellEngine.currentIndex)) return;
+    setSavedSentences(prev => new Set(prev).add(spellEngine.currentIndex));
+    // Fire all word saves in parallel
+    sentence.words.filter(w => !isPunct(w)).forEach(w => {
+      fetch("/api/review-words", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wordEn: w.en, wordZh: w.zh, ipa: sentence.ipa || null, courseId, courseTitle: course.title, source: "saved" })
+      }).catch(() => {});
+    });
+  }, [spellEngine.currentIndex, courseId, course.title, course.sentences, savedSentences]);
 
   const currentSentence = mode === "dictation" ? dictationEngine.currentSentence : spellEngine.currentSentence;
   const currentIndex = mode === "dictation" ? dictationEngine.currentIndex : spellEngine.currentIndex;
@@ -180,8 +185,22 @@ function PracticeInner({
           </>
         )}
 
-        {mode !== "dictation" && currentSentence && (
-          <SentenceCard zh={currentSentence.zh ?? ""} ipa={currentSentence.ipa ?? ""} ipaVisible={ipaVisible} onToggleIpa={toggleIpa} onSpeak={handleSpeak} />
+        {mode === "spell" && currentSentence && (
+          <>
+            <SentenceCard zh={currentSentence.zh ?? ""} ipa={currentSentence.ipa ?? ""} ipaVisible={ipaVisible} onToggleIpa={toggleIpa} onSpeak={handleSpeak} />
+            <div className="flex justify-end">
+              <button onClick={handleSaveSentence}
+                className="text-xs px-3 py-1.5 rounded-lg transition-all"
+                style={{
+                  background: savedSentences.has(spellEngine.currentIndex) ? "var(--accent-bg)" : "var(--hover)",
+                  color: savedSentences.has(spellEngine.currentIndex) ? "var(--accent)" : "var(--text3)",
+                  border: "1px solid",
+                  borderColor: savedSentences.has(spellEngine.currentIndex) ? "var(--accent)" : "transparent",
+                }}>
+                {savedSentences.has(spellEngine.currentIndex) ? "已珍藏" : "珍藏此句"}
+              </button>
+            </div>
+          </>
         )}
 
         {mode === "dictation" && currentSentence && (
@@ -203,15 +222,6 @@ function PracticeInner({
               )}
             </p>
           </motion.div>
-        )}
-
-        {mode === "spell" && !isReview && spellEngine.currentWord && (
-          <div className="flex justify-end">
-            <button onClick={handleSaveWord} className="text-xs px-3 py-1.5 rounded-lg transition-all"
-                style={{ background: savedWords.has(spellEngine.currentWord.en) ? "var(--accent-bg)" : "var(--hover)", color: savedWords.has(spellEngine.currentWord.en) ? "var(--accent)" : "var(--text3)", border: "1px solid", borderColor: savedWords.has(spellEngine.currentWord.en) ? "var(--accent)" : "transparent" }}>
-                {savedWords.has(spellEngine.currentWord.en) ? "已收藏" : "+ 珍藏"}
-            </button>
-          </div>
         )}
 
         {mode === "spell" && !isReview && (
