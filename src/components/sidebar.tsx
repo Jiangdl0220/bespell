@@ -6,10 +6,10 @@ import { IconBook, IconRefresh, IconSwords, IconUser, IconLogOut } from "@/compo
 import { Logo } from "@/components/logo";
 
 const navItems = [
-  { label: "课程", href: "/courses", Icon: IconBook },
-  { label: "复习", href: "/review", Icon: IconRefresh },
-  { label: "竞技", href: "/battle", Icon: IconSwords },
-  { label: "我的", href: "/profile", Icon: IconUser },
+  { label: "词海", href: "/courses", Icon: IconBook },
+  { label: "温故", href: "/review", Icon: IconRefresh },
+  { label: "对弈", href: "/battle", Icon: IconSwords },
+  { label: "印迹", href: "/profile", Icon: IconUser },
 ];
 
 export default function Sidebar() {

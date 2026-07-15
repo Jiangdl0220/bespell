@@ -29,28 +29,49 @@ export default function VoiceSelector() {
     localStorage.setItem("bespell-voice", name);
   };
 
+  const handlePreview = () => {
+    if (!selected) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance("Hello, this is a sample of my voice.");
+    u.lang = "en-US";
+    u.rate = 0.9;
+    const voice = voices.find((v) => v.name === selected);
+    if (voice) u.voice = voice;
+    speechSynthesis.speak(u);
+  };
+
   if (voices.length === 0) return null;
 
   return (
     <div className="flex items-center justify-between py-3">
       <span className="text-sm" style={{ color: "var(--text)" }}>🎙️ 发音人</span>
-      <select
-        value={selected}
-        onChange={(e) => handleChange(e.target.value)}
-        className="text-sm px-3 py-1.5 rounded-lg border outline-none"
-        style={{
-          background: "var(--bg)",
-          color: "var(--text)",
-          borderColor: "var(--border)",
-          fontFamily: "'Inter Tight', system-ui, sans-serif",
-        }}
-      >
-        {voices.map((v) => (
-          <option key={v.name} value={v.name}>
-            {v.name} ({v.lang})
-          </option>
-        ))}
-      </select>
+      <div className="flex items-center gap-2">
+        <select
+          value={selected}
+          onChange={(e) => handleChange(e.target.value)}
+          className="text-sm px-3 py-1.5 rounded-lg border outline-none"
+          style={{
+            background: "var(--bg)",
+            color: "var(--text)",
+            borderColor: "var(--border)",
+            fontFamily: "'Inter Tight', system-ui, sans-serif",
+          }}
+        >
+          {voices.map((v) => (
+            <option key={v.name} value={v.name}>
+              {v.name} ({v.lang})
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={handlePreview}
+          className="text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all hover:scale-105"
+          style={{ background: "var(--accent-bg)", color: "var(--accent)" }}
+          title="试听"
+        >
+          🔊
+        </button>
+      </div>
     </div>
   );
 }
