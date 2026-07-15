@@ -13,11 +13,24 @@ export default function SentenceCard({ zh, ipa, ipaVisible, onToggleIpa, onSpeak
       <p className="text-xl font-bold mb-4 leading-relaxed" style={{color:"var(--text)"}}>{zh}</p>
 
       {ipaVisible && (
-        <motion.p initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}}
-          className="text-base mb-4 leading-loose tracking-wider font-mono"
-          style={{ color: "var(--text2)", letterSpacing: "0.08em", wordSpacing: "0.4em" }}>
-          {ipa}
-        </motion.p>
+        <motion.div initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}}
+          className="mb-4 flex items-center justify-center gap-2 flex-wrap">
+          {ipa
+            .replace(/^\/|\/$/g, "")   // strip surrounding slashes
+            .split(/\s*\|\|\s*|\s+/)   // split by || or whitespace
+            .filter(Boolean)
+            .map((token, i) => (
+              <span key={i}
+                className="text-xs font-mono px-2 py-0.5 rounded-md border"
+                style={{
+                  background: "var(--accent-bg)",
+                  color: "var(--accent)",
+                  borderColor: "var(--border)",
+                }}>
+                {token}
+              </span>
+            ))}
+        </motion.div>
       )}
 
       <div className="flex items-center justify-center gap-3">
