@@ -1,11 +1,10 @@
-import { getSessionUserId } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import NewCoursePage from "@/components/new-course-page";
+"use client";
 
-export const dynamic = "force-dynamic";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default async function NewPage() {
-  const userId = await getSessionUserId();
-  if (!userId) redirect("/login");
-  return <NewCoursePage />;
+export default function NewRedirect() {
+  const router = useRouter();
+  useEffect(() => { router.replace("/courses"); }, [router]);
+  return null;
 }

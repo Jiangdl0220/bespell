@@ -13,7 +13,7 @@ const PLACEHOLDERS = [
   "「酒店前台办理入住，询问早餐时间和周边景点」",
 ];
 
-export default function CourseCreator() {
+export default function CourseCreator({ embedded }: { embedded?: boolean }) {
   const router = useRouter();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [scene, setScene] = useState("");
@@ -51,24 +51,26 @@ export default function CourseCreator() {
   const isValid = scene.trim().length >= 3;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6">
+    <div className={embedded ? "" : "max-w-2xl mx-auto px-4 py-6"}>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         className="space-y-8"
       >
-        {/* Header */}
-        <div className="text-center">
-          <h2
-            className="text-2xl font-bold mb-2"
-            style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: "var(--text)" }}
-          >
-            描述你的场景
-          </h2>
-          <p className="text-sm" style={{ color: "var(--text2)" }}>
-            用自然语言告诉 AI 你想要什么对话，剩下的交给我们
-          </p>
-        </div>
+        {/* Header — only when standalone */}
+        {!embedded && (
+          <div className="text-center">
+            <h2
+              className="text-2xl font-bold mb-2"
+              style={{ fontFamily: "'Playfair Display', 'Georgia', serif", color: "var(--text)" }}
+            >
+              描述你的场景
+            </h2>
+            <p className="text-sm" style={{ color: "var(--text2)" }}>
+              用自然语言告诉 AI 你想要什么对话，剩下的交给我们
+            </p>
+          </div>
+        )}
 
         {/* Scene textarea — the hero element */}
         <div
@@ -240,10 +242,12 @@ export default function CourseCreator() {
           </AnimatePresence>
         </motion.button>
 
-        {/* Hint */}
-        <p className="text-center text-xs" style={{ color: "var(--text3)" }}>
-          也可以去「课程库」选一门预设课程直接开始
-        </p>
+        {/* Hint — only standalone */}
+        {!embedded && (
+          <p className="text-center text-xs" style={{ color: "var(--text3)" }}>
+            也可以去「课程库」选一门预设课程直接开始
+          </p>
+        )}
       </motion.div>
     </div>
   );

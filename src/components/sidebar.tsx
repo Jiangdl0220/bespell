@@ -2,12 +2,13 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { IconBook, IconRefresh, IconSwords, IconUser, IconLogOut } from "@/components/icons";
 
 const navItems = [
-  { label: "课程", href: "/courses", icon: "📖" },
-  { label: "复习", href: "/review", icon: "🔄" },
-  { label: "竞技", href: "/battle", icon: "⚔️" },
-  { label: "我的", href: "/profile", icon: "👤" },
+  { label: "课程", href: "/courses", Icon: IconBook },
+  { label: "复习", href: "/review", Icon: IconRefresh },
+  { label: "竞技", href: "/battle", Icon: IconSwords },
+  { label: "我的", href: "/profile", Icon: IconUser },
 ];
 
 export default function Sidebar() {
@@ -75,7 +76,7 @@ export default function Sidebar() {
                 setOpen(false);
               }}
             >
-              <span className="sidebar-icon">{item.icon}</span>
+              <span className="sidebar-icon"><item.Icon size={18} /></span>
               <span className="sidebar-label">{item.label}</span>
             </button>
           ))}
@@ -99,7 +100,7 @@ export default function Sidebar() {
               router.refresh();
             }}
           >
-            <span className="sidebar-icon">🚪</span>
+            <span className="sidebar-icon"><IconLogOut size={18} /></span>
             <span className="sidebar-label">退出</span>
           </button>
         </div>
