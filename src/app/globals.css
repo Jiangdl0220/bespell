@@ -161,11 +161,11 @@
   }
   .sidebar-slogan {
     display: block;
-    font-family: "Inter Tight", system-ui, sans-serif;
-    font-size: 11px;
+    font-family: "Ma Shan Zheng", "STKaiti", "KaiTi", serif;
+    font-size: 13px;
     font-weight: 400;
-    color: var(--text3);
-    letter-spacing: .08em;
+    color: var(--text2);
+    letter-spacing: .06em;
     margin-top: 2px;
   }
   .sidebar-nav {
