@@ -45,7 +45,9 @@ export default function AuthForm({ mode: initialMode }: AuthFormProps) {
           className="text-center mb-12"
           style={{ color: "var(--accent)" }}
         >
-          <Logo size={52} />
+          <div className="flex justify-center mb-3">
+            <Logo size={52} />
+          </div>
           <h1
             className="text-4xl font-bold tracking-[.15em] mt-4"
             style={{
@@ -98,13 +100,13 @@ export default function AuthForm({ mode: initialMode }: AuthFormProps) {
           <span
             className="absolute select-none pointer-events-none"
             style={{
-              right: -12,
-              top: -8,
-              fontSize: 120,
+              right: -8,
+              bottom: -16,
+              fontSize: 100,
               fontFamily: "'Ma Shan Zheng', 'Noto Serif SC', serif",
-              color: "rgba(45,138,78,0.025)",
+              color: "rgba(45,138,78,0.02)",
               lineHeight: 1,
-              transform: "rotate(12deg)",
+              transform: "rotate(-8deg)",
             }}
           >
             补
