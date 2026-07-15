@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #f8faf7;
+  --bg: #ffffff;
   --card: #ffffff;
   --hover: #f2f7f1;
   --text: #1a2e1c;
