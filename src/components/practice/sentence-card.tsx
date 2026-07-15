@@ -22,11 +22,11 @@ export default function SentenceCard({ zh, ipa, ipaVisible, onToggleIpa, onSpeak
       <div className="flex items-center justify-center gap-3">
         <button onClick={onToggleIpa} className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
           style={{background: ipaVisible ? "var(--accent-bg)" : "var(--border)", color: ipaVisible ? "var(--accent)" : "var(--text2)"}}>
-          {ipaVisible ? "\u9690\u85cf\u97f3\u6807" : "\u663e\u793a\u97f3\u6807"}
+          {ipaVisible ? "隐藏音标" : "显示音标"}
         </button>
         <button onClick={onSpeak} className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
           style={{background:"var(--border)",color:"var(--text2)"}}>
-          \u64ad\u653e
+          {'\u8046\u542c'}
         </button>
       </div>
     </motion.div>

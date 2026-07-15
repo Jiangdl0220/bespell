@@ -149,9 +149,9 @@ export default function UserProfile() {
       {stats.courseCount > 0 && (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-3 gap-3">
           {[
-            { label: "课程", value: stats.courseCount },
-            { label: "已练习", value: `${stats.sentenceDone} 句` },
-            { label: "待复习", value: `${stats.reviewCount} 词` },
+            { label: "课业", value: stats.courseCount },
+            { label: "所练", value: `${stats.sentenceDone} 句` },
+            { label: "所思", value: `${stats.reviewCount} 词` },
           ].map(({ label, value }) => (
             <div key={label} className="card p-4 text-center">
               <div className="text-2xl font-bold mb-1" style={{ color: "var(--accent)" }}>{value}</div>
@@ -172,7 +172,7 @@ export default function UserProfile() {
           style={{ color: "var(--red)" }}
         >
           <IconLogOut size={16} />
-          <span>退出登录</span>
+          <span>拂袖</span>
         </button>
       </motion.div>
     </div>

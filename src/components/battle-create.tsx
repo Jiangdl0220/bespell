@@ -40,14 +40,14 @@ export default function BattleCreate({ onCreated, preselectedCourse }: { onCreat
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">创建挑战</h2>
+      <h2 className="text-lg font-semibold mb-4">设局</h2>
 
       <label className="text-xs block mb-1.5" style={{ color: "var(--text2)" }}>
-        选择课程
+        择课
       </label>
       <div className="space-y-1.5 mb-5 max-h-48 overflow-y-auto">
         {courses.length === 0 ? (
-          <p className="text-xs opacity-30">还没有课程，先去新建一门吧</p>
+          <p className="text-xs opacity-30">尚无研习，先去词海择一课吧</p>
         ) : (
           courses.map((c) => (
             <button
@@ -68,7 +68,7 @@ export default function BattleCreate({ onCreated, preselectedCourse }: { onCreat
       </div>
 
       <label className="text-xs block mb-1.5" style={{ color: "var(--text2)" }}>
-        偷看次数上限
+        窥探次数上限
       </label>
       <div className="flex items-center gap-3 mb-5">
         <button
@@ -93,7 +93,7 @@ export default function BattleCreate({ onCreated, preselectedCourse }: { onCreat
         disabled={!selectedCourse || creating}
         className="btn btn-primary w-full py-3 text-sm"
       >
-        {creating ? "创建中..." : "创建挑战"}
+        {creating ? "设局中..." : "设局"}
       </button>
     </div>
   );
@@ -127,10 +127,10 @@ export function BattleJoin({ onJoined }: { onJoined: (data: { id: string; roomCo
 
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">加入挑战</h2>
+      <h2 className="text-lg font-semibold mb-4">赴约</h2>
 
       <label className="text-xs block mb-1.5" style={{ color: "var(--text2)" }}>
-        输入 4 位房间号
+        暗号
       </label>
       <input
         className="input text-center text-2xl tracking-[.5em] font-mono py-4 mb-4"
@@ -151,7 +151,7 @@ export function BattleJoin({ onJoined }: { onJoined: (data: { id: string; roomCo
         disabled={roomCode.length !== 4 || joining}
         className="btn btn-primary w-full py-3 text-sm"
       >
-        {joining ? "加入中..." : "加入挑战"}
+        {joining ? "赴约中..." : "赴约"}
       </button>
     </div>
   );

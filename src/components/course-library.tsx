@@ -59,8 +59,8 @@ export default function CourseLibrary() {
   return (
     <div className="p-6">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-        <h2 className="text-xl font-bold mb-1" style={{ color: "var(--text)" }}>课程库</h2>
-        <p className="text-sm mb-6" style={{ color: "var(--text2)" }}>精选预设课程，选一门直接开始练习</p>
+        <h2 className="text-xl font-bold mb-1" style={{ color: "var(--text)" }}>书阁</h2>
+        <p className="text-sm mb-6" style={{ color: "var(--text2)" }}>十五门精选，自入门至精深</p>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-6">
@@ -75,7 +75,7 @@ export default function CourseLibrary() {
                 border: !category ? "1px solid var(--accent)" : "1px solid var(--border)",
               }}
             >
-              全部
+              全部分类
             </button>
             {categories.map(c => (
               <button
@@ -107,7 +107,7 @@ export default function CourseLibrary() {
                 border: !difficulty ? "1px solid var(--accent)" : "1px solid var(--border)",
               }}
             >
-              全部难度
+              不限难度
             </button>
             {difficulties.sort((a, b) => DIFF_ORDER.indexOf(a) - DIFF_ORDER.indexOf(b)).map(d => (
               <button
@@ -139,7 +139,7 @@ export default function CourseLibrary() {
           </div>
         ) : courses.length === 0 ? (
           <div className="text-center py-16">
-            <p className="text-sm mb-3" style={{ color: "var(--text2)" }}>还没有预设课程</p>
+            <p className="text-sm mb-3" style={{ color: "var(--text2)" }}>书架尚空，待书入阁</p>
             <p className="text-xs" style={{ color: "var(--text2)", opacity: 0.6 }}>去「AI 生成」标签创建自定义课程</p>
           </div>
         ) : (

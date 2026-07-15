@@ -37,7 +37,7 @@ export default function CourseList() {
   );
 
   if (courses.length === 0) return (
-    <div className="text-center py-16"><p className="text-sm opacity-40">还没有课程</p></div>
+    <div className="text-center py-16"><p className="text-sm opacity-40">词海漫漫，择一课启程</p></div>
   );
 
   return (

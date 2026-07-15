@@ -105,7 +105,7 @@ export default function Sidebar() {
             }}
           >
             <span className="sidebar-icon"><IconLogOut size={18} /></span>
-            <span className="sidebar-label">退出</span>
+            <span className="sidebar-label">拂袖</span>
           </button>
         </div>
       </aside>

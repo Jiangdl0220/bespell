@@ -44,7 +44,7 @@ export default function VoiceSelector() {
 
   return (
     <div className="flex items-center justify-between py-3">
-      <span className="text-sm" style={{ color: "var(--text)" }}>🎙️ 发音人</span>
+      <span className="text-sm" style={{ color: "var(--text)" }}>嗓音</span>
       <div className="flex items-center gap-2">
         <select
           value={selected}

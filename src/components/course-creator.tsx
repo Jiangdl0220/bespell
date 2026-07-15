@@ -239,7 +239,7 @@ export default function CourseCreator({ embedded }: { embedded?: boolean }) {
         {/* Hint — only standalone */}
         {!embedded && (
           <p className="text-center text-xs" style={{ color: "var(--text3)" }}>
-            也可以去「课程库」选一门预设课程直接开始
+            亦可去「书阁」择一课启程
           </p>
         )}
       </motion.div>

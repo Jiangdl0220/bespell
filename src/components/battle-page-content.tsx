@@ -27,18 +27,18 @@ export default function BattlePageContent() {
             onClick={() => setMode("create")}
             className="card p-5 w-full text-left transition-all hover:border-[var(--accent)]"
           >
-            <div className="font-semibold text-base mb-1">创建挑战</div>
+            <div className="font-semibold text-base mb-1">设局</div>
             <div className="text-xs" style={{ color: "var(--text2)" }}>
-              选一门课程，设定偷看上限，生成房间号邀请朋友
+              择一课业，定偷看之限，邀友人对弈
             </div>
           </button>
           <button
             onClick={() => setMode("join")}
             className="card p-5 w-full text-left transition-all hover:border-[var(--accent)]"
           >
-            <div className="font-semibold text-base mb-1">加入挑战</div>
+            <div className="font-semibold text-base mb-1">赴约</div>
             <div className="text-xs" style={{ color: "var(--text2)" }}>
-              输入朋友分享的 4 位房间号，立即加入对战
+              输入暗号，即入对局
             </div>
           </button>
         </div>

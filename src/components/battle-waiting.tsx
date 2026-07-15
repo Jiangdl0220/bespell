@@ -118,7 +118,7 @@ export function BattleWaiting({
       )}
 
       <p className="text-xs mt-6 opacity-30">
-        把房间号发给朋友，输入后立即开始
+        发送暗号，待对手入座
       </p>
     </div>
   );

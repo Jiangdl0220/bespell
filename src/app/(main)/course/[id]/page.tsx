@@ -47,7 +47,7 @@ function DictationArea({ engine, answerRevealed }: { engine: ReturnType<typeof u
           className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:scale-105"
           style={{ background: "var(--accent-bg)", color: "var(--accent)" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-          重播
+          再闻
         </button>
       </div>
       <textarea value={engine.input} onChange={(e) => engine.setInput(e.target.value)}
@@ -72,7 +72,7 @@ function DictationArea({ engine, answerRevealed }: { engine: ReturnType<typeof u
           {engine.submitted && (
             <button onClick={engine.nextSentence} className="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all hover:opacity-80"
               style={{ background: "var(--accent)", color: "white" }}>
-              {engine.done ? "完成" : "下一句"}
+              {engine.done ? "终" : "续行"}
             </button>
           )}
         </motion.div>
@@ -197,7 +197,7 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
                 播放发音
               </button>
-              <p className="text-xs mt-3" style={{ color: "var(--text3)" }}>听英文写句子，可反复重播</p>
+              <p className="text-xs mt-3" style={{ color: "var(--text3)" }}>闻其声而后书，可反复再闻</p>
             </div>
           )}
 
@@ -205,7 +205,7 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
             <div className="flex justify-end">
               <button onClick={handleSaveWord} className="text-xs px-3 py-1.5 rounded-lg transition-all"
                 style={{ background: savedWord === spellEngine.currentWord.en ? "var(--accent-bg)" : "var(--hover)", color: savedWord === spellEngine.currentWord.en ? "var(--accent)" : "var(--text3)", border: "1px solid", borderColor: savedWord === spellEngine.currentWord.en ? "var(--accent)" : "transparent" }}>
-                {savedWord === spellEngine.currentWord.en ? "已收藏" : "+ 加入生词本"}
+                {savedWord === spellEngine.currentWord.en ? "已收藏" : "+ 珍藏"}
               </button>
             </div>
           )}
@@ -218,8 +218,8 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
 
           {done && mode !== "spell" && (
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card p-8 text-center">
-              <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif", color: "var(--accent)" }}>练习完成</h2>
-              <button onClick={() => router.push(`/course/${courseId}/done?mode=${mode}`)} className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:opacity-80" style={{ background: "var(--accent)", color: "white" }}>查看结果</button>
+              <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif", color: "var(--accent)" }}>一课终了</h2>
+              <button onClick={() => router.push(`/course/${courseId}/done?mode=${mode}`)} className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:opacity-80" style={{ background: "var(--accent)", color: "white" }}>览卷</button>
             </motion.div>
           )}
         </main>

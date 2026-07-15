@@ -57,7 +57,7 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
             {progress}%
           </span>
         </div>
-        <p className="text-xs mt-3" style={{color:"var(--text2)"}}>{sentenceCount} 句 · 已完成 {completed} 句</p>
+        <p className="text-xs mt-3" style={{color:"var(--text2)"}}>{sentenceCount} 句 · 已阅 {completed} 句</p>
 
         {/* Battle button */}
         <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--border)" }}>

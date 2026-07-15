@@ -41,8 +41,8 @@ export default function ReviewContent() {
   };
 
   const tabs = [
-    { key: "peek" as const, label: "重点复习", desc: "练习中查看提示的词" },
-    { key: "saved" as const, label: "生词本", desc: "手动收藏的词" },
+    { key: "peek" as const, label: "所思", desc: "练习中曾驻足的词" },
+    { key: "saved" as const, label: "所念", desc: "想要反复回味的词" },
   ];
 
   return (

@@ -36,7 +36,7 @@ export default function CoursesPageContent() {
             border: tab === "library" ? "1px solid var(--accent)" : "1px solid var(--border)",
           }}
         >
-          课程库
+          书阁
         </button>
       </div>
 
@@ -68,10 +68,10 @@ export default function CoursesPageContent() {
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-sm font-bold" style={{ color: "var(--accent)" }}>
-                      ✦ 即兴创作
+                      ✦ 随性抒写
                     </span>
                     <span className="text-xs ml-3" style={{ color: "var(--text2)" }}>
-                      描述你想要的对话场景，AI 为你定制专属课程
+                      不拘一格，随心描绘想练的场景
                     </span>
                   </div>
                   <span className="text-xs font-medium shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" style={{ color: "var(--accent)" }}>
@@ -83,7 +83,7 @@ export default function CoursesPageContent() {
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="text-sm font-bold" style={{ color: "var(--accent)" }}>
-                    ✦ 即兴创作 — 描述你的场景
+                    ✦ 随性抒写
                   </h3>
                   <button
                     onClick={() => setShowAICreator(false)}
