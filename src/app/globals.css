@@ -153,11 +153,11 @@
     color: var(--accent);
   }
   .sidebar-logo {
-    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    font-weight: 600;
-    font-size: 26px;
+    font-family: "ZCOOL QingKe HuangYou", "PingFang SC", sans-serif;
+    font-weight: 400;
+    font-size: 28px;
     color: var(--accent);
-    letter-spacing: .15em;
+    letter-spacing: .12em;
   }
   .sidebar-slogan {
     display: block;
@@ -243,7 +243,7 @@
     box-shadow: inset 3px 0 0 var(--accent), inset 0 0 0 1px rgba(45,138,78,.1);
   }
   .sidebar-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .sidebar-label { white-space: nowrap; font-family: "Noto Serif SC", "Songti SC", "SimSun", serif; font-weight: 500; letter-spacing: .08em; }
+  .sidebar-label { white-space: nowrap; font-family: "Ma Shan Zheng", "STKaiti", "KaiTi", serif; font-weight: 400; letter-spacing: .06em; }
 
   /* ── Mobile ── */
   .mobile-topbar {
