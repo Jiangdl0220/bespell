@@ -52,38 +52,38 @@ export default function CoursesPageContent() {
             <CourseList />
           </div>
         ) : (
-          <div className="space-y-10">
-            <CourseLibrary />
-
-            {/* Divider + AI section */}
-            <div className="flex items-center gap-4">
-              <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-              <span className="text-xs font-medium shrink-0" style={{ color: "var(--text3)" }}>
-                没有想要的？
-              </span>
-              <div className="flex-1 h-px" style={{ background: "var(--border)" }} />
-            </div>
-
+          <div className="space-y-6">
+            {/* AI creator entry — at top */}
             {!showAICreator ? (
-              <div className="text-center">
-                <button
-                  onClick={() => setShowAICreator(true)}
-                  className="card p-6 w-full max-w-sm mx-auto text-left transition-all hover:border-[var(--accent)] group"
-                >
-                  <div className="text-base font-semibold mb-1 flex items-center gap-2">
-                    <span style={{ color: "var(--accent)" }}>✦</span>
-                    <span>即兴创作</span>
+              <button
+                onClick={() => setShowAICreator(true)}
+                className="w-full p-4 rounded-2xl text-left transition-all hover:shadow-sm group"
+                style={{
+                  background: "var(--accent-bg)",
+                  border: "1px solid var(--accent)",
+                  borderColor: "var(--accent)",
+                  opacity: 0.9,
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-bold" style={{ color: "var(--accent)" }}>
+                      ✦ 即兴创作
+                    </span>
+                    <span className="text-xs ml-3" style={{ color: "var(--text2)" }}>
+                      描述你想要的对话场景，AI 为你定制专属课程
+                    </span>
                   </div>
-                  <p className="text-xs" style={{ color: "var(--text2)" }}>
-                    用自然语言描述你想要的对话场景，AI 为你定制专属课程
-                  </p>
-                </button>
-              </div>
+                  <span className="text-xs font-medium shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" style={{ color: "var(--accent)" }}>
+                    开始 →
+                  </span>
+                </div>
+              </button>
             ) : (
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-                    ✦ 即兴创作
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-bold" style={{ color: "var(--accent)" }}>
+                    ✦ 即兴创作 — 描述你的场景
                   </h3>
                   <button
                     onClick={() => setShowAICreator(false)}
@@ -93,9 +93,13 @@ export default function CoursesPageContent() {
                     收起
                   </button>
                 </div>
-                <CourseCreator embedded />
+                <div className="p-5 rounded-2xl mb-6" style={{ background: "var(--card)", border: "1px solid var(--border)" }}>
+                  <CourseCreator embedded />
+                </div>
               </div>
             )}
+
+            <CourseLibrary />
           </div>
         )}
       </motion.div>

@@ -3,39 +3,55 @@ export function Logo({ size = 28 }: { size?: number }) {
     <svg
       width={size}
       height={size}
-      viewBox="0 0 40 40"
+      viewBox="0 0 36 34"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* Rounded container */}
-      <rect x="2" y="2" width="36" height="36" rx="10" stroke="currentColor" strokeWidth="2" opacity="0.15" />
-      {/* Book spine + B letterform */}
+      {/* Left page — vertical spine */}
       <path
-        d="M12 10v18c0 1 .8 2 2 2h14V12H15a2 2 0 0 1 0-4h13"
+        d="M10 4v24a1 1 0 0 0 1 1h7V4H10Z"
+        fill="currentColor"
+        opacity="0.12"
+      />
+      {/* B upper bowl — open book arc */}
+      <path
+        d="M17 4h7a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3h-7"
+        fill="none"
         stroke="currentColor"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {/* B counter (inner arc) */}
+      {/* Spine line */}
       <path
-        d="M18 17h5a2 2 0 0 0 0-4h-5v10h6a2.5 2.5 0 0 0 0-5h-6"
+        d="M17 4v26"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      {/* B middle divider */}
+      <line
+        x1="17" y1="17" x2="27" y2="17"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        opacity="0.3"
+      />
+      {/* B lower bowl */}
+      <path
+        d="M17 17h8a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3h-8"
+        fill="none"
         stroke="currentColor"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        opacity="0"
       />
-      {/* Clean B letterform */}
+      {/* Diamond accent */}
       <path
-        d="M20 13v14M20 13h5a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-5M20 21h6a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-6"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        d="m30 6 2 2-2 2-2-2 2-2Z"
+        fill="currentColor"
+        opacity="0.6"
       />
-      {/* Spark accent */}
-      <circle cx="30" cy="11" r="1.8" fill="currentColor" opacity="0.5" />
     </svg>
   );
 }
@@ -49,15 +65,28 @@ export function LogoFavicon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect x="1" y="1" width="30" height="30" rx="8" fill="#2d8a4e" />
       <path
-        d="M16 9v14M16 9h5a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-5M16 17h6a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-6"
-        stroke="white"
-        strokeWidth="2.4"
+        d="M10 2v24a1 1 0 0 0 1 1h7V2H10Z"
+        fill="#2d8a4e"
+        opacity="0.18"
+      />
+      <path
+        d="M17 2h7a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3h-7"
+        stroke="#2d8a4e"
+        strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="24" cy="8" r="1.6" fill="white" opacity="0.7" />
+      <path d="M17 2v26" stroke="#2d8a4e" strokeWidth="2.5" strokeLinecap="round" />
+      <line x1="17" y1="15" x2="27" y2="15" stroke="#2d8a4e" strokeWidth="2.5" strokeLinecap="round" opacity="0.3" />
+      <path
+        d="M17 15h8a3 3 0 0 1 3 3v4a3 3 0 0 1-3 3h-8"
+        stroke="#2d8a4e"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="m30 4 2 2-2 2-2-2 2-2Z" fill="#2d8a4e" opacity="0.6" />
     </svg>
   );
 }

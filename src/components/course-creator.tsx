@@ -55,7 +55,7 @@ export default function CourseCreator({ embedded }: { embedded?: boolean }) {
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="space-y-8"
+        className={embedded ? "space-y-3" : "space-y-8"}
       >
         {/* Header — only when standalone */}
         {!embedded && (
@@ -74,7 +74,7 @@ export default function CourseCreator({ embedded }: { embedded?: boolean }) {
 
         {/* Scene textarea — the hero element */}
         <div
-          className="relative rounded-2xl p-[2px] transition-all duration-300"
+          className="relative rounded-xl p-[2px] transition-all duration-300"
           style={{
             background: focused
               ? "linear-gradient(135deg, var(--accent), rgba(45,138,78,.3))"
@@ -82,7 +82,7 @@ export default function CourseCreator({ embedded }: { embedded?: boolean }) {
           }}
         >
           <div
-            className="rounded-2xl p-6"
+            className="rounded-xl p-4"
             style={{ background: "var(--card)" }}
           >
             <textarea
@@ -95,45 +95,39 @@ export default function CourseCreator({ embedded }: { embedded?: boolean }) {
                 if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleCreate();
               }}
               placeholder={placeholder}
-              rows={4}
+              rows={embedded ? 2 : 4}
               maxLength={400}
-              className="w-full resize-none bg-transparent border-none outline-none text-base leading-relaxed"
+              className="w-full resize-none bg-transparent border-none outline-none text-sm leading-relaxed"
               style={{
                 fontFamily: "'Inter Tight', system-ui, sans-serif",
                 color: "var(--text)",
-                lineHeight: "1.75",
+                lineHeight: "1.65",
               }}
             />
-            {/* Character counter + hint */}
-            <div className="flex items-center justify-between mt-3">
-              <span className="text-xs" style={{ color: "var(--text3)" }}>
-                {scene.length > 0
-                  ? `${scene.length}/400`
-                  : "⌘ + Enter 快速生成"}
-              </span>
-              <span className="text-xs" style={{ color: "var(--text3)" }}>
-                {scene.length}/400
+            <div className="flex items-center justify-between mt-2">
+              <span className="text-[11px]" style={{ color: "var(--text3)" }}>
+                {scene.length > 0 ? `${scene.length}/400` : "⌘ + Enter"}
               </span>
             </div>
           </div>
         </div>
 
         {/* Settings row: difficulty + count */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {/* Difficulty */}
           <div>
             <label
-              className="block text-xs font-semibold uppercase tracking-[.1em] mb-3"
+              className="block text-[11px] font-semibold uppercase tracking-[.1em] mb-2"
               style={{ color: "var(--text2)" }}
             >
               难度
             </label>
-            <div className="flex gap-1.5 flex-wrap">
+            <div className="flex gap-1 flex-wrap">
               {DIFFICULTY_LEVELS.map((d) => (
                 <button
                   key={d}
                   onClick={() => setDifficulty(d)}
-                  className="relative flex-1 min-w-[48px] py-2.5 rounded-xl text-xs font-semibold transition-all"
+                  className="relative flex-1 min-w-[40px] py-1.5 rounded-lg text-[11px] font-semibold transition-all"
                   style={{
                     background: difficulty === d ? "var(--accent-bg)" : "var(--hover)",
                     color: difficulty === d ? "var(--accent)" : "var(--text2)",
@@ -163,7 +157,7 @@ export default function CourseCreator({ embedded }: { embedded?: boolean }) {
                 <button
                   key={n}
                   onClick={() => setCount(n)}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                  className="flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all"
                   style={{
                     background: count === n ? "var(--accent-bg)" : "var(--hover)",
                     color: count === n ? "var(--accent)" : "var(--text2)",
@@ -197,7 +191,7 @@ export default function CourseCreator({ embedded }: { embedded?: boolean }) {
         <motion.button
           onClick={handleCreate}
           disabled={!isValid || loading}
-          className="relative w-full py-4 rounded-2xl text-sm font-bold tracking-wide overflow-hidden disabled:opacity-40 disabled:cursor-not-allowed"
+          className="relative w-full py-2.5 rounded-xl text-sm font-bold tracking-wide overflow-hidden disabled:opacity-40 disabled:cursor-not-allowed"
           style={{
             background: isValid
               ? "var(--accent)"

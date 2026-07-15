@@ -96,6 +96,8 @@ export async function getDb(): Promise<any> {
         created_at TIMESTAMP NOT NULL DEFAULT NOW()
       )
     `;
+    // Add avatar column if not exists (migration)
+    try { await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar TEXT`; } catch {}
     console.log("🔌 Using Neon Postgres (tables ready)");
 
     _db = drizzlePg(sql, { schema: pgSchema });

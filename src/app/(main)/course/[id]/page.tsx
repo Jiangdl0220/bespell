@@ -2,225 +2,278 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { usePracticeEngine, PracticeSentence, WordToken } from "@/hooks/use-practice-engine";
+import { motion } from "framer-motion";
+import { usePracticeEngine, PracticeSentence, WordToken, isPunct } from "@/hooks/use-practice-engine";
+import { useDictationEngine } from "@/hooks/use-dictation-engine";
+import { useClozeEngine } from "@/hooks/use-cloze-engine";
 import PracticeHeader from "@/components/practice/header";
 import SentenceCard from "@/components/practice/sentence-card";
 import InputArea from "@/components/practice/input-area";
+import { speak } from "@/components/voice-selector";
 import RequireAuth from "@/components/require-auth";
 
-export default function PracticePage({
-  params: paramsPromise,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+type PracticeMode = "spell" | "dictation" | "cloze";
+
+const MODE_LABELS: Record<PracticeMode, string> = { spell: "拼写", dictation: "听力", cloze: "填空" };
+
+function getInitialMode(): PracticeMode {
+  if (typeof window === "undefined") return "spell";
+  const p = new URLSearchParams(window.location.search);
+  const m = p.get("mode") as PracticeMode;
+  return m && ["spell", "dictation", "cloze"].includes(m) ? m : "spell";
+}
+
+function ModeTabs({ mode, onChange }: { mode: PracticeMode; onChange: (m: PracticeMode) => void }) {
+  return (
+    <div className="flex gap-1 p-1 rounded-xl" style={{ background: "var(--bg2)" }}>
+      {(Object.entries(MODE_LABELS) as [PracticeMode, string][]).map(([key, label]) => (
+        <button key={key} onClick={() => onChange(key)}
+          className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+          style={{
+            background: mode === key ? "var(--card)" : "transparent",
+            color: mode === key ? "var(--accent)" : "var(--text2)",
+            boxShadow: mode === key ? "0 1px 3px rgba(0,0,0,.06)" : "none",
+          }}
+        >{label}</button>
+      ))}
+    </div>
+  );
+}
+
+function DictationArea({ engine, answerRevealed }: { engine: ReturnType<typeof useDictationEngine>; answerRevealed: boolean }) {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-center gap-3 mb-4">
+        <button onClick={() => engine.currentSentence && speak(engine.currentSentence.en, 0.82)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:scale-105"
+          style={{ background: "var(--accent-bg)", color: "var(--accent)" }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          重播
+        </button>
+      </div>
+      <textarea value={engine.input} onChange={(e) => engine.setInput(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); engine.submitted ? engine.nextSentence() : engine.submitAndCheck(); }}}
+        placeholder="输入你听到的英文句子..." rows={3} disabled={engine.submitted}
+        className="w-full resize-none rounded-xl p-4 text-base leading-relaxed outline-none transition-all border"
+        style={{
+          background: "var(--card)", color: "var(--text)",
+          borderColor: engine.submitted ? (engine.isCorrect ? "var(--accent)" : "var(--red)") : "var(--border)",
+          fontFamily: "'Inter Tight', system-ui, sans-serif",
+        }}
+        autoFocus
+      />
+      {engine.submitted && (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
+          <span className="text-sm font-semibold" style={{ color: engine.isCorrect ? "var(--accent)" : "var(--red)" }}>
+            {engine.isCorrect ? "✓ 正确" : "✗ 再看一次"}
+          </span>
+          {answerRevealed && !engine.isCorrect && (
+            <span className="text-sm" style={{ color: "var(--text2)" }}>答案：{engine.currentSentence?.en}</span>
+          )}
+          {engine.submitted && (
+            <button onClick={engine.nextSentence} className="px-4 py-1.5 rounded-lg text-sm font-semibold transition-all hover:opacity-80"
+              style={{ background: "var(--accent)", color: "white" }}>
+              {engine.done ? "完成" : "下一句"}
+            </button>
+          )}
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
+function ClozeArea({ engine }: { engine: ReturnType<typeof useClozeEngine> }) {
+  if (!engine.currentSentence) return null;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-1 flex-wrap justify-center mb-4 text-base leading-relaxed min-h-[48px]">
+        {engine.currentWords.map((w, i) => {
+          const isBlank = engine.blanks.has(i);
+          const isDone = engine.submittedWords.some((sw) => sw.en === w.en);
+          const isCurrent = i === engine.blankIndices[engine.wordIndex];
+          if (isPunct(w)) return <span key={i} style={{ color: "var(--text)", opacity: 0.5 }}>{w.en}</span>;
+          if (isDone) return <span key={i} className="font-semibold mx-0.5" style={{ color: "var(--accent)" }}>{w.en}</span>;
+          return (
+            <span key={i} className="inline-block min-w-[48px] px-2 py-0.5 text-center rounded border-b-2 transition-all mx-0.5"
+              style={{
+                borderColor: isCurrent ? "var(--accent)" : "var(--border)",
+                background: isCurrent ? "var(--accent-bg)" : "transparent",
+                color: isCurrent ? "var(--accent)" : "var(--text3)",
+              }}>
+              {engine.hintVisible && isCurrent ? w.en : "___"}
+            </span>
+          );
+        })}
+      </div>
+      {engine.currentWord && (
+        <div className="flex items-center gap-3">
+          <input ref={engine.inputRef} value={engine.input} onChange={(e) => engine.setInput(e.target.value)}
+            onKeyDown={engine.handleKeyDown}
+            className="flex-1 rounded-xl px-4 py-3 text-base text-center font-semibold outline-none border transition-all"
+            style={{
+              background: "var(--card)", color: "var(--text)",
+              borderColor: engine.feedbackToken === "correct" ? "var(--accent)" : engine.feedbackToken === "error" ? "var(--red)" : "var(--border)",
+              fontFamily: "'Inter Tight', system-ui, sans-serif",
+              boxShadow: engine.feedbackToken === "correct" ? "0 0 0 3px rgba(45,138,78,.15)" : engine.feedbackToken === "error" ? "0 0 0 3px rgba(220,50,50,.1)" : "none",
+            }}
+            placeholder={`填写单词 (${engine.wordIndex + 1}/${engine.blankIndices.length})`}
+            autoFocus
+          />
+          <span className="text-xs shrink-0" style={{ color: "var(--text3)" }}>Tab 查看</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function PracticePage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [courseId, setCourseId] = useState<string | null>(null);
-  const [course, setCourse] = useState<{
-    title: string;
-    difficulty: string;
-    sentences: PracticeSentence[];
-    total: number;
-  } | null>(null);
+  const [course, setCourse] = useState<{ title: string; difficulty: string; sentences: PracticeSentence[]; total: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [ipaVisible, setIpaVisible] = useState(true); // default show
+  const [mode, setMode] = useState<PracticeMode>("spell");
+  const [ipaVisible, setIpaVisible] = useState(true);
   const [savedWord, setSavedWord] = useState<string | null>(null);
 
-  useEffect(() => {
-    paramsPromise.then(({ id }) => {
-      setCourseId(id);
-    });
-  }, [paramsPromise]);
+  // Params
+  useEffect(() => { paramsPromise.then(({ id }) => setCourseId(id)); }, [paramsPromise]);
 
+  // Read mode from URL
+  useEffect(() => { setMode(getInitialMode()); }, []);
+
+  // Load course
   useEffect(() => {
     if (!courseId) return;
-
-    fetch(`/api/courses/${courseId}`)
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setCourse(data);
-          // Load IPA preference
-          const saved = localStorage.getItem("bespell-ipa-visible");
-          if (saved !== null) setIpaVisible(saved === "true");
-        }
-      })
-      .catch(() => setError("加载课程失败"))
-      .finally(() => setLoading(false));
+    fetch(`/api/courses/${courseId}`).then(r => r.json()).then(data => {
+      if (data.error) setError(data.error); else setCourse(data);
+      const saved = localStorage.getItem("bespell-ipa-visible");
+      if (saved !== null) setIpaVisible(saved === "true");
+    }).catch(() => setError("加载课程失败")).finally(() => setLoading(false));
   }, [courseId]);
 
-  // Ref to track current sentence index for the peek callback
+  // ----- Spell engine -----
   const peekIdxRef = useRef(0);
-
-  const engine = usePracticeEngine(course?.sentences ?? [], useCallback((word: WordToken) => {
-    fetch("/api/review-words", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        wordEn: word.en,
-        wordZh: word.zh,
-        ipa: course?.sentences[peekIdxRef.current]?.ipa || null,
-        courseId,
-        courseTitle: course?.title || "",
-        source: "peek",
-      }),
-    }).catch(() => {});
+  const spellEngine = usePracticeEngine(course?.sentences ?? [], useCallback((word: WordToken) => {
+    fetch("/api/review-words", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ wordEn: word.en, wordZh: word.zh, ipa: course?.sentences[peekIdxRef.current]?.ipa || null, courseId, courseTitle: course?.title || "", source: "peek" }) }).catch(() => {});
   }, [courseId, course?.title, course?.sentences]));
+  peekIdxRef.current = spellEngine.currentIndex;
 
-  // Keep the ref in sync
-  peekIdxRef.current = engine.currentIndex;
+  // ----- Dictation engine -----
+  const dictationEngine = useDictationEngine(course?.sentences ?? []);
+  const [dictAnswerRevealed, setDictAnswerRevealed] = useState(false);
 
-  // Auto-focus on mount
+  // ----- Cloze engine -----
+  const clozeEngine = useClozeEngine(course?.sentences ?? []);
+
+  // Auto-speak for dictation
   useEffect(() => {
-    if (!loading && course) {
-      engine.focusInput();
+    if (mode === "dictation" && dictationEngine.currentSentence) {
+      const timer = setTimeout(() => speak(dictationEngine.currentSentence.en, 0.82), 500);
+      return () => clearTimeout(timer);
     }
-  }, [loading, course]);
+  }, [mode, dictationEngine.currentIndex]);
 
-  // Auto-save progress after each completed sentence
-  const prevIndexRef = useRef(engine.currentIndex);
-  useEffect(() => {
-    if (!courseId) return;
-    // Only save when we advance (not first render)
-    if (engine.currentIndex > prevIndexRef.current) {
-      const prevSentence = course?.sentences[prevIndexRef.current];
-      if (prevSentence) {
-        fetch("/api/progress", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            courseId,
-            sentenceIndex: prevIndexRef.current,
-            attempts: 1,
-            correct: 1,
-          }),
-        }).catch(() => {});
-      }
-    }
-    prevIndexRef.current = engine.currentIndex;
-  }, [engine.currentIndex, courseId, course?.sentences]);
+  // Reveal answer after submit in dictation
+  useEffect(() => { setDictAnswerRevealed(dictationEngine.submitted && !dictationEngine.isCorrect); }, [dictationEngine.submitted, dictationEngine.isCorrect]);
 
-  // Navigate to completion
+  // Auto-focus spell
+  useEffect(() => { if (mode === "spell" && course) spellEngine.focusInput(); }, [mode, course]);
+
+  // Auto-save spell progress
+  const prevIndexRef = useRef(spellEngine.currentIndex);
   useEffect(() => {
-    if (engine.isComplete && courseId) {
-      const params = new URLSearchParams({
-        correct: String(engine.totalCorrect),
-        attempts: String(engine.totalAttempts),
-        accuracy: String(engine.accuracy),
-        combo: String(engine.maxCombo),
-        time: String(engine.elapsed),
-      });
-      router.push(`/course/${courseId}/done?${params.toString()}`);
+    if (mode !== "spell" || !courseId) return;
+    if (spellEngine.currentIndex > prevIndexRef.current) {
+      fetch("/api/progress", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId, sentenceIndex: prevIndexRef.current, attempts: 1, correct: 1 }) }).catch(() => {});
     }
-  }, [engine.isComplete, courseId]);
+    prevIndexRef.current = spellEngine.currentIndex;
+  }, [spellEngine.currentIndex, courseId, mode]);
+
+  // Spell completion
+  useEffect(() => {
+    if (mode !== "spell" || !spellEngine.isComplete || !courseId) return;
+    router.push(`/course/${courseId}/done?${new URLSearchParams({ correct: String(spellEngine.totalCorrect), attempts: String(spellEngine.totalAttempts), accuracy: String(spellEngine.accuracy), combo: String(spellEngine.maxCombo), time: String(spellEngine.elapsed) }).toString()}`);
+  }, [spellEngine.isComplete, courseId, mode]);
+
+  // Handlers
+  const handleModeChange = (m: PracticeMode) => {
+    setMode(m);
+    const url = new URL(window.location.href);
+    url.searchParams.set("mode", m);
+    window.history.replaceState({}, "", url.toString());
+  };
 
   const toggleIpa = useCallback(() => {
-    setIpaVisible((v) => {
-      const next = !v;
-      localStorage.setItem("bespell-ipa-visible", String(next));
-      return next;
-    });
+    setIpaVisible(v => { const next = !v; localStorage.setItem("bespell-ipa-visible", String(next)); return next; });
   }, []);
 
   const handleSpeak = useCallback(() => {
-    if (!engine.currentSentence) return;
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(engine.currentSentence.en);
-      utterance.lang = "en-US";
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
-    }
-  }, [engine.currentSentence]);
+    const en = mode === "spell" ? spellEngine.currentSentence?.en : clozeEngine.currentSentence?.en;
+    if (en) speak(en);
+  }, [mode, spellEngine.currentSentence, clozeEngine.currentSentence]);
 
   const handleSaveWord = useCallback(() => {
-    const word = engine.currentWord;
+    const word = spellEngine.currentWord;
     if (!word || !courseId) return;
-    fetch("/api/review-words", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        wordEn: word.en,
-        wordZh: word.zh,
-        ipa: course?.sentences[engine.currentIndex]?.ipa || null,
-        courseId,
-        courseTitle: course?.title || "",
-        source: "saved",
-      }),
-    })
-      .then(() => setSavedWord(word.en))
-      .catch(() => {});
-  }, [engine.currentWord, courseId, course?.title, engine.currentIndex, course?.sentences]);
+    fetch("/api/review-words", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ wordEn: word.en, wordZh: word.zh, ipa: course?.sentences[spellEngine.currentIndex]?.ipa || null, courseId, courseTitle: course?.title || "", source: "saved" }) }).then(() => setSavedWord(word.en)).catch(() => {});
+  }, [spellEngine.currentWord, courseId, course?.title, spellEngine.currentIndex, course?.sentences]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bgdot flex items-center justify-center">
-        <div className="animate-pulse text-lg opacity-45">加载中...</div>
-      </div>
-    );
-  }
+  // Derived
+  const currentSentence = mode === "dictation" ? dictationEngine.currentSentence : mode === "cloze" ? clozeEngine.currentSentence : spellEngine.currentSentence;
+  const currentIndex = mode === "dictation" ? dictationEngine.currentIndex : mode === "cloze" ? clozeEngine.currentIndex : spellEngine.currentIndex;
+  const done = mode === "dictation" ? dictationEngine.done : mode === "cloze" ? clozeEngine.done : spellEngine.isComplete;
 
-  if (error || !course) {
-    return (
-      <div className="min-h-screen bgdot flex items-center justify-center">
-        <p className="text-[var(--red)]">{error || "课程不存在"}</p>
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}><div className="animate-pulse text-lg opacity-45">加载中...</div></div>;
+  if (error || !course) return <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}><p style={{ color: "var(--red)" }}>{error || "课程不存在"}</p></div>;
 
   return (
     <RequireAuth>
-    <div className="min-h-screen" style={{background:"var(--bg)"}}>
-      <PracticeHeader
-        title={course.title}
-        difficulty={course.difficulty}
-        currentIndex={engine.currentIndex}
-        total={course.total}
-        combo={engine.combo}
-      />
+      <div className="min-h-screen" style={{ background: "var(--bg)" }}>
+        <PracticeHeader title={course.title} difficulty={course.difficulty} currentIndex={currentIndex} total={course.total} combo={mode === "spell" ? spellEngine.combo : 0} />
+        <main className="w-full max-w-2xl mx-auto px-4 py-6 space-y-5">
+          <ModeTabs mode={mode} onChange={handleModeChange} />
 
-      <main className="w-full max-w-3xl mx-auto px-6 py-8 space-y-5">
-        <SentenceCard
-          zh={engine.currentSentence?.zh ?? ""}
-          ipa={engine.currentSentence?.ipa ?? ""}
-          ipaVisible={ipaVisible}
-          onToggleIpa={toggleIpa}
-          onSpeak={handleSpeak}
-        />
+          {mode !== "dictation" && currentSentence && (
+            <SentenceCard zh={currentSentence.zh ?? ""} ipa={currentSentence.ipa ?? ""} ipaVisible={ipaVisible} onToggleIpa={toggleIpa} onSpeak={handleSpeak} />
+          )}
 
-        {/* Save word button */}
-        {engine.currentWord && (
-          <div className="flex justify-end">
-            <button
-              onClick={handleSaveWord}
-              className="text-xs px-3 py-1.5 rounded-lg transition-all"
-              style={{
-                background: savedWord === engine.currentWord.en ? "var(--accent-bg)" : "var(--hover)",
-                color: savedWord === engine.currentWord.en ? "var(--accent)" : "var(--text3)",
-                border: "1px solid",
-                borderColor: savedWord === engine.currentWord.en ? "var(--accent)" : "transparent",
-              }}
-            >
-              {savedWord === engine.currentWord.en ? "已收藏" : "+ 加入生词本"}
-            </button>
-          </div>
-        )}
+          {mode === "dictation" && currentSentence && (
+            <div className="card px-6 py-8 text-center">
+              <p className="text-sm mb-4" style={{ color: "var(--text2)" }}>第 {dictationEngine.currentIndex + 1} / {course.total} 句</p>
+              <button onClick={() => speak(currentSentence.en, 0.82)} className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all hover:scale-105" style={{ background: "var(--accent)", color: "white" }}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                播放发音
+              </button>
+              <p className="text-xs mt-3" style={{ color: "var(--text3)" }}>听英文写句子，可反复重播</p>
+            </div>
+          )}
 
-        <InputArea
-          words={engine.currentSentence?.words ?? []}
-          currentWordIndex={engine.currentWordIndex}
-          inputValue={engine.inputValue}
-          hintVisible={engine.hintVisible}
-          feedback={engine.feedback}
-          inputRef={engine.inputRef}
-          onKeyDown={engine.handleKeyDown}
-          onKeyUp={engine.handleKeyUp}
-          onChange={engine.handleInputChange}
-          onFocus={engine.focusInput}
-        />
-      </main>
-    </div>
+          {mode === "spell" && spellEngine.currentWord && (
+            <div className="flex justify-end">
+              <button onClick={handleSaveWord} className="text-xs px-3 py-1.5 rounded-lg transition-all"
+                style={{ background: savedWord === spellEngine.currentWord.en ? "var(--accent-bg)" : "var(--hover)", color: savedWord === spellEngine.currentWord.en ? "var(--accent)" : "var(--text3)", border: "1px solid", borderColor: savedWord === spellEngine.currentWord.en ? "var(--accent)" : "transparent" }}>
+                {savedWord === spellEngine.currentWord.en ? "已收藏" : "+ 加入生词本"}
+              </button>
+            </div>
+          )}
+
+          {mode === "spell" && (
+            <InputArea words={currentSentence?.words ?? []} currentWordIndex={spellEngine.currentWordIndex} inputValue={spellEngine.inputValue} hintVisible={spellEngine.hintVisible} feedback={spellEngine.feedback} inputRef={spellEngine.inputRef} onKeyDown={spellEngine.handleKeyDown} onKeyUp={spellEngine.handleKeyUp} onChange={spellEngine.handleInputChange} onFocus={spellEngine.focusInput} />
+          )}
+
+          {mode === "dictation" && <DictationArea engine={dictationEngine} answerRevealed={dictAnswerRevealed} />}
+          {mode === "cloze" && <ClozeArea engine={clozeEngine} />}
+
+          {done && mode !== "spell" && (
+            <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card p-8 text-center">
+              <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif", color: "var(--accent)" }}>练习完成</h2>
+              <button onClick={() => router.push(`/course/${courseId}/done?mode=${mode}`)} className="px-6 py-3 rounded-xl text-sm font-semibold transition-all hover:opacity-80" style={{ background: "var(--accent)", color: "white" }}>查看结果</button>
+            </motion.div>
+          )}
+        </main>
+      </div>
     </RequireAuth>
   );
 }
