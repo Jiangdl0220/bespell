@@ -113,7 +113,7 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
   // Auto-speak for dictation
   useEffect(() => {
     if (mode === "dictation" && dictationEngine.currentSentence) {
-      const timer = setTimeout(() => speak(dictationEngine.currentSentence.en, 0.82), 500);
+      const timer = setTimeout(() => speak(dictationEngine.currentSentence.en), 500);
       return () => clearTimeout(timer);
     }
   }, [mode, dictationEngine.currentIndex]);
@@ -185,7 +185,7 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
           {mode === "dictation" && currentSentence && (
             <div className="card px-6 py-8 text-center">
               <p className="text-sm mb-4" style={{ color: "var(--text2)" }}>第 {dictationEngine.currentIndex + 1} / {course.total} 句</p>
-              <button onClick={() => speak(currentSentence.en, 0.82)} className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all hover:scale-105" style={{ background: "var(--accent)", color: "white" }}>
+              <button onClick={() => speak(currentSentence.en)} className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-lg font-semibold transition-all hover:scale-105" style={{ background: "var(--accent)", color: "white" }}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
                 闻声
               </button>

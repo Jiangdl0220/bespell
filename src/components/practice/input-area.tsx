@@ -66,7 +66,7 @@ export default function InputArea({ words, currentWordIndex, inputValue, hintVis
         className="absolute opacity-0 w-0 h-0 pointer-events-none" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false"/>
 
       <div className="flex items-center justify-between mt-8">
-        <p className="text-xs" style={{color:"var(--text3)"}}>空格确认 · Tab 偷看</p>
+        <p className="text-xs" style={{color:"var(--text3)"}}>空格确认 · Tab 窥探</p>
         <div className="h-5">
           <AnimatePresence>
             {hintVisible && currentWord && (

@@ -69,7 +69,7 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
             className="text-xs flex items-center gap-1.5 opacity-40 hover:opacity-100 hover:text-[var(--accent)] transition-all"
           >
             <IconSwords size={14} />
-            <span>发起挑战</span>
+            <span>邀弈</span>
           </button>
         </div>
 

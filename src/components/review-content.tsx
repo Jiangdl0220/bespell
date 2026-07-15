@@ -86,7 +86,7 @@ export default function ReviewContent() {
         <div className="card p-12 text-center">
           <p className="text-sm opacity-40">
             {tab === "peek"
-              ? "练习中 Tab 偷看的单词会出现在这里"
+              ? "练习中 Tab 窥探的单词会出现在这里"
               : "练习中收藏的单词会出现在这里"}
           </p>
         </div>

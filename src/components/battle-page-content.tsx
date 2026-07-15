@@ -29,7 +29,7 @@ export default function BattlePageContent() {
           >
             <div className="font-semibold text-base mb-1">设局</div>
             <div className="text-xs" style={{ color: "var(--text2)" }}>
-              择一课业，定偷看之限，邀友人对弈
+              择一课业，定窥探之限，邀友人对弈
             </div>
           </button>
           <button

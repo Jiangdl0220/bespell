@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 export default function VoiceSelector() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -18,9 +18,9 @@ export default function VoiceSelector() {
       }
     };
     load();
-    speechSynthesis.onvoiceschanged = load;
+    speechSynthesis.addEventListener("voiceschanged", load);
     return () => {
-      speechSynthesis.onvoiceschanged = null;
+      speechSynthesis.removeEventListener("voiceschanged", load);
     };
   }, []);
 
@@ -76,38 +76,22 @@ export default function VoiceSelector() {
   );
 }
 
-// Cache voices globally so they're available immediately on all pages
-let _cachedVoices: SpeechSynthesisVoice[] | null = null;
-
-function getVoices(): SpeechSynthesisVoice[] {
-  if (_cachedVoices && _cachedVoices.length > 0) return _cachedVoices;
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return [];
-  const fresh = window.speechSynthesis.getVoices();
-  if (fresh.length > 0) _cachedVoices = fresh;
-  return fresh;
-}
-
-// Preload voices on first import
-if (typeof window !== "undefined" && "speechSynthesis" in window) {
-  speechSynthesis.getVoices();
-  speechSynthesis.onvoiceschanged = () => {
-    _cachedVoices = speechSynthesis.getVoices();
-  };
-}
-
-// Helper to speak with stored voice preference
-export function speak(text: string, rate = 0.85) {
+/**
+ * Synchronous speak function — identical pattern to handlePreview above.
+ * Reads getVoices() at CALL TIME, no state, no hooks, no closures.
+ * This guarantees the correct voice is used everywhere.
+ */
+export function speak(text: string, rate = 0.9) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  const synth = window.speechSynthesis;
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "en-US";
-  utterance.rate = rate;
-  utterance.volume = 1;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = rate;
   const preferred = localStorage.getItem("bespell-voice");
   if (preferred) {
-    const voices = getVoices();
+    const voices = speechSynthesis.getVoices();
     const match = voices.find((v) => v.name === preferred);
-    if (match) utterance.voice = match;
+    if (match) u.voice = match;
   }
-  synth.speak(utterance);
+  speechSynthesis.speak(u);
 }

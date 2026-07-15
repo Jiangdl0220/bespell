@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { usePracticeEngine, PracticeSentence, WordToken } from "@/hooks/use-practice-engine";
+import { speak } from "@/components/voice-selector";
 import PracticeHeader from "@/components/practice/header";
 import SentenceCard from "@/components/practice/sentence-card";
 import InputArea from "@/components/practice/input-area";
@@ -129,12 +130,7 @@ export default function BattleArena({
 
   const handleSpeak = useCallback(() => {
     if (!engine.currentSentence) return;
-    if ("speechSynthesis" in window) {
-      const utterance = new SpeechSynthesisUtterance(engine.currentSentence.en);
-      utterance.lang = "en-US";
-      utterance.rate = 0.8;
-      speechSynthesis.speak(utterance);
-    }
+    speak(engine.currentSentence.en);
   }, [engine.currentSentence]);
 
   const toggleIpa = useCallback(() => {
