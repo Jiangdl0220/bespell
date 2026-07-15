@@ -65,9 +65,9 @@ export default function Sidebar() {
         <div className="sidebar-brand" onClick={() => router.push("/courses")}>
           <div className="sidebar-brand-row">
             <Logo size={26} />
-            <span className="sidebar-logo">念念有词</span>
+            <span className="sidebar-logo">补白</span>
           </div>
-          <span className="sidebar-slogan">一词一世界</span>
+          <span className="sidebar-slogan">白处生词</span>
         </div>
 
         <nav className="sidebar-nav">

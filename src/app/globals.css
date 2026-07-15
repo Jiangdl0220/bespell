@@ -155,9 +155,9 @@
   .sidebar-logo {
     font-family: "Ma Shan Zheng", "STKaiti", "KaiTi", serif;
     font-weight: 400;
-    font-size: 26px;
+    font-size: 30px;
     color: var(--accent);
-    letter-spacing: .08em;
+    letter-spacing: .12em;
   }
   .sidebar-slogan {
     display: block;
