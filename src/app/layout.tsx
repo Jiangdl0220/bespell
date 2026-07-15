@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import InkParticlesClient from "@/components/ink-particles-client";
 
 export const metadata: Metadata = {
   title: "补白 — 白处生词",
@@ -24,7 +25,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <InkParticlesClient />
+        {children}
+      </body>
     </html>
   );
 }

@@ -2,7 +2,10 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
 import RequireAuth from "@/components/require-auth";
+
+const SealStamp = dynamic(() => import("@/components/seal-stamp"), { ssr: false });
 
 export default function DonePage() {
   const router = useRouter();
@@ -15,6 +18,9 @@ export default function DonePage() {
   return (
     <RequireAuth>
     <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
+      {/* 3D Seal Stamp */}
+      <SealStamp trigger={true} />
+
       <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="w-full max-w-sm text-center">
         <div className="flex justify-center gap-1 mb-8">
           {[1,2,3,4,5].map(i => (

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { IconSwords } from "@/components/icons";
+import Card3D from "@/components/card-3d";
 
 interface CourseCardProps {
   id: string; title: string; scene: string; difficulty: string;
@@ -28,8 +29,8 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
   };
 
   return (
-    <div onClick={() => router.push(`/course/${id}`)} className="block relative group/card cursor-pointer">
-      <motion.div whileHover={{ y: -2 }} className="card p-5 relative">
+    <Card3D className="cursor-pointer">
+      <div onClick={() => router.push(`/course/${id}`)} className="card p-5 relative">
         <div className="flex items-start justify-between mb-4 pr-8">
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-base truncate group-hover/card:opacity-80 transition-opacity">{title}</h3>
@@ -81,7 +82,7 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
           style={{color:"var(--red)"}}>
           {deleting ? "\u00b7\u00b7\u00b7" : "\u2715"}
         </button>
-      </motion.div>
-    </div>
+      </div>
+    </Card3D>
   );
 }
