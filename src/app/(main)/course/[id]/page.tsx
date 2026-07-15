@@ -167,7 +167,7 @@ function PracticeInner({
   return (
     <div className="min-h-screen" style={{ background: "var(--bg)" }}>
       <PracticeHeader title={course.title} difficulty={course.difficulty} currentIndex={currentIndex} total={course.total} combo={mode === "spell" ? spellEngine.combo : 0} />
-      <main className="w-full max-w-2xl mx-auto px-4 py-6 space-y-5">
+      <main className="w-full max-w-5xl mx-auto px-4 py-6 space-y-5">
         <ModeTabs mode={mode} onChange={handleModeChange} />
 
         {mode === "spell" && (

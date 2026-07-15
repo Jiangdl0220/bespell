@@ -11,7 +11,7 @@ export default function PracticeHeader({ title, difficulty, currentIndex, total,
 
   return (
     <header className="sticky top-0 z-20" style={{background:"var(--bg)"}}>
-      <div className="max-w-3xl mx-auto px-6 py-4">
+      <div className="max-w-5xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between mb-3">
           <div className="min-w-0 flex-1 mr-4">
             <h1 className="text-sm font-semibold truncate">{title}</h1>
