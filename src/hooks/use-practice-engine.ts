@@ -174,14 +174,15 @@ export function usePracticeEngine(sentences: PracticeSentence[], onPeek?: (word:
     setFeedback(null);
   }, [sentences.length, canJumpTo]);
 
-  // Check completeness whenever statuses change
-  const allCorrect = sentenceStatuses.every(s => s === "correct");
+  // Check completeness based on real progress, not pre-marked statuses
+  const isCompleteFromProgress = currentIndex >= sentences.length - 1 && sentenceStatuses[sentences.length - 1] === "correct";
+  const shouldShowComplete = isComplete || isCompleteFromProgress;
 
   return {
     currentIndex, currentWordIndex, inputValue, combo, maxCombo,
     hintVisible, feedback, sentenceStatuses, currentSentence, currentWord,
     isLastSentence, isLastWord, totalCorrect, totalAttempts,
-    accuracy, elapsed, isComplete: isComplete || allCorrect, total: sentences.length,
+    accuracy, elapsed, isComplete: shouldShowComplete, total: sentences.length,
     inputRef, completed, nextUncompleted, jumpTo,
     handleKeyDown, handleKeyUp, handleInputChange, focusInput, setCurrentIndex,
   };
