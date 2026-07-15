@@ -49,7 +49,7 @@ export default function VoiceSelector() {
         <select
           value={selected}
           onChange={(e) => handleChange(e.target.value)}
-          className="text-sm px-3 py-1.5 rounded-lg border outline-none"
+          className="text-sm pl-3 pr-9 py-1.5 rounded-lg border outline-none"
           style={{
             background: "var(--bg)",
             color: "var(--text)",
