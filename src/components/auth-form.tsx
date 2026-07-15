@@ -37,27 +37,25 @@ export default function AuthForm({ mode: initialMode }: AuthFormProps) {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-md">
         {/* Brand */}
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-10"
+          className="text-center mb-12"
+          style={{ color: "var(--accent)" }}
         >
-          <div className="flex items-center justify-center gap-3 mb-3">
-            <Logo size={36} />
-            <h1
-              className="text-3xl font-bold tracking-[.15em]"
-              style={{
-                fontFamily: "'ZCOOL QingKe HuangYou', serif",
-                color: "var(--accent)",
-              }}
-            >
-              补白
-            </h1>
-          </div>
+          <Logo size={52} />
+          <h1
+            className="text-4xl font-bold tracking-[.15em] mt-4"
+            style={{
+              fontFamily: "'ZCOOL QingKe HuangYou', serif",
+            }}
+          >
+            补白
+          </h1>
           <p
-            className="text-sm tracking-[.2em]"
+            className="text-base tracking-[.2em] mt-2"
             style={{
               fontFamily: "'Ma Shan Zheng', serif",
               color: "var(--text2)",
@@ -91,7 +89,7 @@ export default function AuthForm({ mode: initialMode }: AuthFormProps) {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           onSubmit={handleSubmit}
-          className="card px-8 py-10 space-y-6 overflow-hidden relative"
+          className="card px-10 py-12 space-y-8 overflow-hidden relative"
           style={{
             background: "linear-gradient(135deg, #ffffff 0%, #f8faf7 40%, #f0f5ee 100%)",
           }}
@@ -120,7 +118,7 @@ export default function AuthForm({ mode: initialMode }: AuthFormProps) {
               onChange={(e) => { setUsername(e.target.value); setError(""); }}
               onFocus={() => setFocused("username")}
               onBlur={() => setFocused(null)}
-              className="w-full pb-3 pt-1 text-base bg-transparent border-b-2 outline-none transition-all"
+              className="w-full pb-4 pt-2 text-lg bg-transparent border-b-2 outline-none transition-all"
               style={{
                 borderColor: focused === "username" ? "var(--accent)" : "var(--border)",
                 color: "var(--text)",
@@ -152,7 +150,7 @@ export default function AuthForm({ mode: initialMode }: AuthFormProps) {
               onChange={(e) => { setPassword(e.target.value); setError(""); }}
               onFocus={() => setFocused("password")}
               onBlur={() => setFocused(null)}
-              className="w-full pb-3 pt-1 text-base bg-transparent border-b-2 outline-none transition-all"
+              className="w-full pb-4 pt-2 text-lg bg-transparent border-b-2 outline-none transition-all"
               style={{
                 borderColor: focused === "password" ? "var(--accent)" : "var(--border)",
                 color: "var(--text)",
@@ -195,7 +193,7 @@ export default function AuthForm({ mode: initialMode }: AuthFormProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl text-sm font-semibold tracking-wide transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
+            className="w-full py-3.5 rounded-xl text-base font-semibold tracking-wide transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-40"
             style={{ background: "var(--accent)", color: "white" }}
           >
             {loading ? "..." : isLogin ? "叩门" : "落墨"}
