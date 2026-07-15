@@ -46,23 +46,39 @@ export default function VoiceSelector() {
     <div className="flex items-center justify-between py-3">
       <span className="text-sm" style={{ color: "var(--text)" }}>嗓音</span>
       <div className="flex items-center gap-2">
-        <select
-          value={selected}
-          onChange={(e) => handleChange(e.target.value)}
-          className="text-sm pl-3 pr-9 py-1.5 rounded-lg border outline-none"
-          style={{
-            background: "var(--bg)",
-            color: "var(--text)",
-            borderColor: "var(--border)",
-            fontFamily: "'Inter Tight', system-ui, sans-serif",
-          }}
-        >
-          {voices.map((v) => (
-            <option key={v.name} value={v.name}>
-              {v.name} ({v.lang})
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            value={selected}
+            onChange={(e) => handleChange(e.target.value)}
+            className="text-sm pl-3 pr-9 py-1.5 rounded-lg border outline-none appearance-none"
+            style={{
+              background: "var(--bg)",
+              color: "var(--text)",
+              borderColor: "var(--border)",
+              fontFamily: "'Inter Tight', system-ui, sans-serif",
+            }}
+          >
+            {voices.map((v) => (
+              <option key={v.name} value={v.name}>
+                {v.name} ({v.lang})
+              </option>
+            ))}
+          </select>
+          <svg
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ color: "var(--text2)" }}
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
         <button
           onClick={handlePreview}
           className="text-xs px-2.5 py-1.5 rounded-lg font-medium transition-all hover:scale-105"
