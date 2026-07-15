@@ -56,7 +56,7 @@ export default function CourseLibrary() {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-6xl">
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
         <h2 className="text-xl font-bold mb-1" style={{ color: "var(--text)" }}>课程库</h2>
         <p className="text-sm mb-6" style={{ color: "var(--text2)" }}>精选预设课程，选一门直接开始练习</p>
@@ -127,7 +127,7 @@ export default function CourseLibrary() {
 
         {/* Course grid */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="card p-5 animate-pulse">
                 <div className="h-4 w-32 rounded mb-3" style={{ background: "var(--border)" }} />
@@ -142,7 +142,7 @@ export default function CourseLibrary() {
             <p className="text-xs" style={{ color: "var(--text2)", opacity: 0.6 }}>去「AI 生成」标签创建自定义课程</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {courses.map((course, i) => (
               <motion.div
                 key={course.id}
