@@ -153,11 +153,11 @@
     color: var(--accent);
   }
   .sidebar-logo {
-    font-family: "Playfair Display", "Georgia", serif;
+    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
     font-weight: 700;
-    font-size: 22px;
+    font-size: 19px;
     color: var(--accent);
-    letter-spacing: -.02em;
+    letter-spacing: .04em;
   }
   .sidebar-slogan {
     display: block;

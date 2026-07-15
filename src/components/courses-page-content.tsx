@@ -25,7 +25,7 @@ export default function CoursesPageContent() {
             border: tab === "mine" ? "1px solid var(--accent)" : "1px solid var(--border)",
           }}
         >
-          我的课程
+          课业
         </button>
         <button
           onClick={() => setTab("library")}

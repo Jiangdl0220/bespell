@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BeSpell — 一词一世界",
-  description: "AI 英语拼写练习 · 看中文拼英文 · 一词一世界",
+  title: "念念有词 — 一词一世界",
+  description: "念念有词 · AI 英语拼写练习 · 一词一世界",
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },
