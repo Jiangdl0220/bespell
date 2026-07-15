@@ -16,29 +16,21 @@ export default function CoursesPageContent() {
   return (
     <div className="page-container">
       {/* Tab bar */}
-      <div className="flex justify-center gap-2 mb-8 mt-2">
-        <button
-          onClick={() => setTab("mine")}
-          className="relative px-6 py-2.5 rounded-xl text-sm font-semibold transition-all"
-          style={{
-            background: tab === "mine" ? "var(--accent-bg)" : "transparent",
-            color: tab === "mine" ? "var(--accent)" : "var(--text2)",
-            border: tab === "mine" ? "1px solid var(--accent)" : "1px solid var(--border)",
-          }}
-        >
-          课业
-        </button>
-        <button
-          onClick={() => setTab("library")}
-          className="relative px-6 py-2.5 rounded-xl text-sm font-semibold transition-all"
-          style={{
-            background: tab === "library" ? "var(--accent-bg)" : "transparent",
-            color: tab === "library" ? "var(--accent)" : "var(--text2)",
-            border: tab === "library" ? "1px solid var(--accent)" : "1px solid var(--border)",
-          }}
-        >
-          书阁
-        </button>
+      <div className="flex gap-1 mb-8 mt-2" style={{ background: "var(--hover)", borderRadius: 12, padding: 4 }}>
+        {(["mine", "library"] as const).map((key) => (
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className="flex-1 py-2.5 text-sm font-medium rounded-[10px] transition-all"
+            style={{
+              background: tab === key ? "var(--card)" : "transparent",
+              color: tab === key ? "var(--accent)" : "var(--text2)",
+              boxShadow: tab === key ? "0 1px 3px rgba(0,0,0,.06)" : "none",
+            }}
+          >
+            {key === "mine" ? "课业" : "书阁"}
+          </button>
+        ))}
       </div>
 
       {/* Tab content */}
