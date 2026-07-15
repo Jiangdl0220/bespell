@@ -36,10 +36,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "对局已开始或已结束" }, { status: 400 });
   }
 
-  await db
-    .update(battles)
-    .set({ opponentId: userId, status: "active" })
-    .where(eq(battles.id, battle.id));
+  // Use raw SQL to avoid Drizzle timestamp parsing issues
+  await db.execute(
+    `UPDATE battles SET opponent_id = '${userId}', status = 'active' WHERE id = '${battle.id}' AND status = 'waiting'`
+  );
 
   return NextResponse.json({
     success: true,

@@ -1,13 +1,7 @@
-import { getSessionUserId } from "@/lib/auth";
-import BattlePageContent from "@/components/battle-page-content";
-import RequireAuth from "@/components/require-auth";
+"use client";
 
-export const dynamic = "force-dynamic";
+import BattlePageContent from "@/components/battle-page-content";
 
 export default function BattlePage() {
-  return (
-    <RequireAuth>
-      <BattlePageContent />
-    </RequireAuth>
-  );
+  return <BattlePageContent />;
 }
