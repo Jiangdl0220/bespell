@@ -153,11 +153,11 @@
     color: var(--accent);
   }
   .sidebar-logo {
-    font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
-    font-weight: 700;
-    font-size: 19px;
+    font-family: "Ma Shan Zheng", "STKaiti", "KaiTi", serif;
+    font-weight: 400;
+    font-size: 26px;
     color: var(--accent);
-    letter-spacing: .04em;
+    letter-spacing: .08em;
   }
   .sidebar-slogan {
     display: block;

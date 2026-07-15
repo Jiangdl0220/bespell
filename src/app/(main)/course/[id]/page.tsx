@@ -13,7 +13,7 @@ import RequireAuth from "@/components/require-auth";
 
 type PracticeMode = "spell" | "dictation";
 
-const MODE_LABELS: Record<PracticeMode, string> = { spell: "拼写", dictation: "听力" };
+const MODE_LABELS: Record<PracticeMode, string> = { spell: "落笔", dictation: "聆音" };
 
 function getInitialMode(): PracticeMode {
   if (typeof window === "undefined") return "spell";
