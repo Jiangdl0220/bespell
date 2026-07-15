@@ -80,18 +80,17 @@ export default function VoiceSelector() {
 export function speak(text: string, rate = 0.85) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   const synth = window.speechSynthesis;
-  synth.cancel();
-  // Small delay to let cancel flush before queuing new utterance
-  setTimeout(() => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = rate;
-    const preferred = localStorage.getItem("bespell-voice");
-    if (preferred) {
-      const voices = synth.getVoices();
-      const match = voices.find((v) => v.name === preferred);
-      if (match) utterance.voice = match;
-    }
-    synth.speak(utterance);
-  }, 50);
+  // Pause any ongoing speech without distorting the next utterance
+  if (synth.speaking || synth.pending) synth.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  utterance.rate = rate;
+  const preferred = localStorage.getItem("bespell-voice");
+  if (preferred) {
+    const voices = synth.getVoices();
+    const match = voices.find((v) => v.name === preferred);
+    if (match) utterance.voice = match;
+  }
+  // Queue directly — cancel is synchronous enough here
+  synth.speak(utterance);
 }

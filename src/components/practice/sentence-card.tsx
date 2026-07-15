@@ -24,8 +24,8 @@ export default function SentenceCard({ zh, ipa, ipaVisible, onToggleIpa, onSpeak
           style={{background: ipaVisible ? "var(--accent-bg)" : "var(--border)", color: ipaVisible ? "var(--accent)" : "var(--text2)"}}>
           {ipaVisible ? "隐藏音标" : "显示音标"}
         </button>
-        <button onClick={onSpeak} className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all"
-          style={{background:"var(--border)",color:"var(--text2)"}}>
+        <button onClick={onSpeak} className="text-xs px-3 py-1.5 rounded-lg font-medium transition-all hover:opacity-80 active:scale-95"
+          style={{background: "var(--accent-bg)", color: "var(--accent)"}}>
           {'\u8046\u542c'}
         </button>
       </div>
