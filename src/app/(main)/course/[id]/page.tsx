@@ -93,6 +93,7 @@ function ClozeArea({ engine }: { engine: ReturnType<typeof useClozeEngine> }) {
           const isDone = engine.submittedWords.some((sw) => sw.en === w.en);
           const isCurrent = i === engine.blankIndices[engine.wordIndex];
           if (isPunct(w)) return <span key={i} style={{ color: "var(--text)", opacity: 0.5 }}>{w.en}</span>;
+          if (!isBlank) return <span key={i} className="mx-0.5" style={{ color: "var(--text)" }}>{w.en}</span>;
           if (isDone) return <span key={i} className="font-semibold mx-0.5" style={{ color: "var(--accent)" }}>{w.en}</span>;
           return (
             <span key={i} className="inline-block min-w-[48px] px-2 py-0.5 text-center rounded border-b-2 transition-all mx-0.5"
