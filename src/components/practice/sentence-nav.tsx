@@ -52,12 +52,12 @@ export default function SentenceNav({ total, currentIndex, completed, nextUncomp
                 background: isCurrent
                   ? "var(--accent)"
                   : isDone
-                  ? "var(--accent-bg)"
+                  ? "var(--accent)"
                   : isNext
                   ? "var(--border-f)"
                   : "var(--border)",
                 border: isCurrent ? "2px solid var(--accent)" : "2px solid transparent",
-                opacity: clickable ? 1 : isCurrent || isDone || isNext ? 1 : 0.35,
+                opacity: isCurrent ? 1 : isDone ? 0.55 : clickable ? 1 : 0.35,
                 cursor: clickable ? "pointer" : "default",
                 transform: isCurrent ? "scale(1.25)" : "scale(1)",
                 boxShadow: isCurrent ? "0 0 0 3px var(--accent-bg)" : "none",
