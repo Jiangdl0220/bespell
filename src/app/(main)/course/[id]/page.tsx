@@ -24,10 +24,10 @@ function getInitialMode(): PracticeMode {
 
 function ModeTabs({ mode, onChange }: { mode: PracticeMode; onChange: (m: PracticeMode) => void }) {
   return (
-    <div className="flex gap-1 p-1 rounded-xl" style={{ background: "var(--bg2)" }}>
+    <div className="flex gap-1" style={{ background: "var(--hover)", borderRadius: 12, padding: 4 }}>
       {(Object.entries(MODE_LABELS) as [PracticeMode, string][]).map(([key, label]) => (
         <button key={key} onClick={() => onChange(key)}
-          className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all"
+          className="flex-1 py-2.5 text-sm font-medium rounded-[10px] transition-all"
           style={{
             background: mode === key ? "var(--card)" : "transparent",
             color: mode === key ? "var(--accent)" : "var(--text2)",
