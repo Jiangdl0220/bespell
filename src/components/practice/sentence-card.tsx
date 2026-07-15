@@ -1,29 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { WordToken } from "@/hooks/use-practice-engine";
-import { isPunct } from "@/hooks/use-practice-engine";
 
 interface SentenceCardProps {
-  zh: string; ipa: string; words: WordToken[];
+  zh: string; ipa: string;
   ipaVisible: boolean; onToggleIpa: () => void; onSpeak: () => void;
 }
 
-export default function SentenceCard({ zh, ipa, words, ipaVisible, onToggleIpa, onSpeak }: SentenceCardProps) {
-  const realWords = words.filter(w => !isPunct(w));
-
+export default function SentenceCard({ zh, ipa, ipaVisible, onToggleIpa, onSpeak }: SentenceCardProps) {
   return (
     <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="card px-6 py-8 text-center">
       <p className="text-xl font-bold mb-4 leading-relaxed" style={{color:"var(--text)"}}>{zh}</p>
-
-      <div className="flex items-center justify-center gap-1 flex-wrap mb-4">
-        {realWords.map((w, i) => (
-          <span key={i} className="text-xs px-1.5 py-0.5 rounded font-mono"
-            style={{background:"var(--border)",color:"var(--text2)"}}>
-            {w.en}
-          </span>
-        ))}
-      </div>
 
       {ipaVisible && (
         <motion.p initial={{opacity:0,height:0}} animate={{opacity:1,height:"auto"}}

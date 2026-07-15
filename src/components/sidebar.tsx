@@ -82,6 +82,15 @@ export default function Sidebar() {
         </nav>
 
         <div className="sidebar-footer">
+          {/* User profile */}
+          <button
+            className="sidebar-user"
+            onClick={() => { router.push("/profile"); setOpen(false); }}
+          >
+            <span className="sidebar-user-avatar">{avatarLetter}</span>
+            <span className="sidebar-user-name">{nickname || "未设置"}</span>
+          </button>
+
           <button
             className="sidebar-item"
             onClick={async () => {

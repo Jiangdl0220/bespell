@@ -170,6 +170,45 @@
     padding: 8px 10px 24px;
     border-top: 1px solid var(--border);
   }
+  .sidebar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: left;
+  }
+  .sidebar-user:hover {
+    background: var(--hover);
+  }
+  .sidebar-user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent-bg);
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sidebar-user-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .sidebar-item {
     display: flex;
     align-items: center;
