@@ -3,11 +3,9 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-// Floating Chinese ink particles — subtle background atmosphere
-// Characters: 补 白 词 海 印 墨 · dots
-
+// Floating Chinese ink particles — mesh-based for proper alpha
 const CHARS = ["补", "白", "词", "海", "印", "墨"];
-const PARTICLE_COUNT = 28;
+const PARTICLE_COUNT = 32;
 
 export default function InkParticles() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,97 +17,110 @@ export default function InkParticles() {
     const width = window.innerWidth;
     const height = window.innerHeight;
 
-    // Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
-    camera.position.z = 30;
+    camera.position.z = 25;
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
-    // Lights
-    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
-    scene.add(ambient);
-
-    // Canvas textures for characters
-    const textures: THREE.Sprite[] = [];
-
-    const createCharSprite = (char: string, size: number, opacity: number) => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 128;
-      canvas.height = 128;
-      const ctx = canvas.getContext("2d")!;
-      ctx.font = `bold 80px "Ma Shan Zheng", "Noto Serif SC", serif`;
-      ctx.fillStyle = `rgba(45, 138, 78, ${opacity})`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(char, 64, 64);
-
-      const texture = new THREE.CanvasTexture(canvas);
-      texture.minFilter = THREE.LinearFilter;
-      texture.magFilter = THREE.LinearFilter;
-
-      const material = new THREE.SpriteMaterial({
-        map: texture,
-        transparent: true,
-        depthWrite: false,
-      });
-      const sprite = new THREE.Sprite(material);
-      sprite.scale.set(size, size, 1);
-      return sprite;
-    };
-
-    // Create dot particles
-    const dotGeo = new THREE.SphereGeometry(0.08, 8, 8);
+    // Shared geometry for char planes
+    const charGeo = new THREE.PlaneGeometry(1, 1);
+    const dotGeo = new THREE.SphereGeometry(0.12, 8, 8);
 
     const particles: {
-      mesh: THREE.Sprite | THREE.Mesh;
+      mesh: THREE.Mesh;
+      baseOpacity: number;
       speed: { x: number; y: number; rot: number };
       phase: number;
     }[] = [];
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
-      const isChar = i < CHARS.length * 2;
-      let mesh: THREE.Sprite | THREE.Mesh;
+      const isChar = i < CHARS.length * 3;
 
       if (isChar) {
+        // Draw char at full opacity on canvas
         const char = CHARS[i % CHARS.length];
-        const size = 0.8 + Math.random() * 2.5;
-        const opacity = 0.04 + Math.random() * 0.08;
-        mesh = createCharSprite(char, size, opacity);
+        const canvas = document.createElement("canvas");
+        canvas.width = 256;
+        canvas.height = 256;
+        const ctx = canvas.getContext("2d")!;
+        ctx.fillStyle = "#2d8a4e"; // solid green, no alpha
+        ctx.font = "bold 160px 'Ma Shan Zheng', 'Noto Serif SC', serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(char, 128, 128);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          opacity: 0.08 + Math.random() * 0.14,
+          depthWrite: false,
+          depthTest: false,
+        });
+
+        const size = 1.5 + Math.random() * 3.5;
+        const mesh = new THREE.Mesh(charGeo, material);
+        mesh.scale.set(size, size, 1);
+        mesh.renderOrder = -1;
+
+        mesh.position.x = (Math.random() - 0.5) * 38;
+        mesh.position.y = (Math.random() - 0.5) * 28;
+        mesh.position.z = (Math.random() - 0.5) * 8;
+
+        scene.add(mesh);
+
+        particles.push({
+          mesh,
+          baseOpacity: material.opacity,
+          speed: {
+            x: (Math.random() - 0.5) * 0.004,
+            y: 0.005 + Math.random() * 0.015,
+            rot: (Math.random() - 0.5) * 0.003,
+          },
+          phase: Math.random() * Math.PI * 2,
+        });
       } else {
+        // Small green dot
         const material = new THREE.MeshBasicMaterial({
           color: 0x2d8a4e,
           transparent: true,
-          opacity: 0.03 + Math.random() * 0.06,
+          opacity: 0.04 + Math.random() * 0.10,
           depthWrite: false,
+          depthTest: false,
         });
-        mesh = new THREE.Mesh(dotGeo, material);
-        mesh.scale.setScalar(0.5 + Math.random() * 2);
+
+        const mesh = new THREE.Mesh(dotGeo, material);
+        mesh.scale.setScalar(0.5 + Math.random() * 3);
+        mesh.renderOrder = -1;
+
+        mesh.position.x = (Math.random() - 0.5) * 38;
+        mesh.position.y = (Math.random() - 0.5) * 28;
+        mesh.position.z = (Math.random() - 0.5) * 8;
+
+        scene.add(mesh);
+
+        particles.push({
+          mesh,
+          baseOpacity: material.opacity,
+          speed: {
+            x: (Math.random() - 0.5) * 0.004,
+            y: 0.005 + Math.random() * 0.015,
+            rot: (Math.random() - 0.5) * 0.003,
+          },
+          phase: Math.random() * Math.PI * 2,
+        });
       }
-
-      mesh.position.x = (Math.random() - 0.5) * 40;
-      mesh.position.y = (Math.random() - 0.5) * 30;
-      mesh.position.z = (Math.random() - 0.5) * 10;
-
-      scene.add(mesh);
-
-      particles.push({
-        mesh,
-        speed: {
-          x: (Math.random() - 0.5) * 0.003,
-          y: 0.004 + Math.random() * 0.012,
-          rot: (Math.random() - 0.5) * 0.005,
-        },
-        phase: Math.random() * Math.PI * 2,
-      });
     }
 
-    // Animation loop
+    // Animation
     let frameId: number;
     const clock = new THREE.Clock();
 
@@ -119,20 +130,18 @@ export default function InkParticles() {
 
       particles.forEach((p) => {
         p.mesh.position.y += p.speed.y;
-        p.mesh.position.x += p.speed.x + Math.sin(t * 0.3 + p.phase) * 0.003;
+        p.mesh.position.x += p.speed.x + Math.sin(t * 0.3 + p.phase) * 0.004;
         p.mesh.rotation.z += p.speed.rot;
 
-        // Wrap around
-        if (p.mesh.position.y > 18) p.mesh.position.y = -18;
-        if (p.mesh.position.y < -18) p.mesh.position.y = 18;
-        if (p.mesh.position.x > 22) p.mesh.position.x = -22;
-        if (p.mesh.position.x < -22) p.mesh.position.x = 22;
+        // Wrap
+        if (p.mesh.position.y > 16) p.mesh.position.y = -16;
+        if (p.mesh.position.y < -16) p.mesh.position.y = 16;
+        if (p.mesh.position.x > 21) p.mesh.position.x = -21;
+        if (p.mesh.position.x < -21) p.mesh.position.x = 21;
 
-        // Subtle opacity pulse
-        if ("material" in p.mesh) {
-          const mat = p.mesh.material as THREE.MeshBasicMaterial;
-          mat.opacity = 0.03 + Math.sin(t * 0.5 + p.phase) * 0.02 + 0.02;
-        }
+        // Gentle opacity pulse
+        const mat = p.mesh.material as THREE.MeshBasicMaterial;
+        mat.opacity = p.baseOpacity * (0.7 + 0.3 * Math.sin(t * 0.6 + p.phase));
       });
 
       renderer.render(scene, camera);
@@ -140,7 +149,6 @@ export default function InkParticles() {
 
     animate();
 
-    // Resize handler
     const onResize = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
@@ -155,12 +163,6 @@ export default function InkParticles() {
       window.removeEventListener("resize", onResize);
       container.removeChild(renderer.domElement);
       renderer.dispose();
-      scene.clear();
-      textures.forEach((s) => {
-        (s.material as THREE.SpriteMaterial).map?.dispose();
-        (s.material as THREE.SpriteMaterial).dispose();
-      });
-      dotGeo.dispose();
     };
   }, []);
 
