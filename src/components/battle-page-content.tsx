@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import BattleCreate, { BattleJoin } from "@/components/battle-create";
 import { BattleWaiting } from "@/components/battle-waiting";
 
 export default function BattlePageContent() {
-  const [mode, setMode] = useState<"choose" | "create" | "join" | "waiting">("choose");
+  const searchParams = useSearchParams();
+  const preselectedCourse = searchParams.get("course");
+  const [mode, setMode] = useState<"choose" | "create" | "join" | "waiting">(
+    preselectedCourse ? "create" : "choose"
+  );
   const [roomCode, setRoomCode] = useState("");
   const [battleId, setBattleId] = useState("");
   const [isCreator, setIsCreator] = useState(false);
@@ -42,6 +47,7 @@ export default function BattlePageContent() {
       {mode === "create" && (
         <div className="card p-6">
           <BattleCreate
+            preselectedCourse={preselectedCourse ?? undefined}
             onCreated={(code) => {
               setRoomCode(code);
               setIsCreator(true);

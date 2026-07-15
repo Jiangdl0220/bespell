@@ -1,9 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { useState, useCallback } from "react";
+import { useState } from "react";
+import { IconSwords } from "@/components/icons";
 
 interface CourseCardProps {
   id: string; title: string; scene: string; difficulty: string;
@@ -19,7 +19,7 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
   const bars = bar[difficulty]||1;
 
   const handleDelete = async (e: React.MouseEvent) => {
-    e.preventDefault(); e.stopPropagation();
+    e.stopPropagation();
     if (!confirm("\u786e\u5b9a\u5220\u9664\u8fd9\u95e8\u8bfe\u7a0b\uff1f")) return;
     setDeleting(true);
     await fetch(`/api/courses/${id}`, { method: "DELETE" });
@@ -28,8 +28,8 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
   };
 
   return (
-    <Link href={`/course/${id}`} className="block relative group/card">
-      <motion.div whileHover={{ y: -2 }} className="card p-5 cursor-pointer relative">
+    <div onClick={() => router.push(`/course/${id}`)} className="block relative group/card cursor-pointer">
+      <motion.div whileHover={{ y: -2 }} className="card p-5 relative">
         <div className="flex items-start justify-between mb-4 pr-8">
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-base truncate group-hover/card:opacity-80 transition-opacity">{title}</h3>
@@ -63,13 +63,12 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
         <div className="mt-3 pt-3 border-t" style={{ borderColor: "var(--border)" }}>
           <button
             onClick={(e) => {
-              e.preventDefault();
               e.stopPropagation();
               router.push(`/battle?course=${id}`);
             }}
             className="text-xs flex items-center gap-1.5 opacity-40 hover:opacity-100 hover:text-[var(--accent)] transition-all"
           >
-            <span>⚔️</span>
+            <IconSwords size={14} />
             <span>发起挑战</span>
           </button>
         </div>
@@ -83,6 +82,6 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
           {deleting ? "\u00b7\u00b7\u00b7" : "\u2715"}
         </button>
       </motion.div>
-    </Link>
+    </div>
   );
 }

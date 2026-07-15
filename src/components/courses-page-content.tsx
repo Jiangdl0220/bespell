@@ -50,15 +50,6 @@ export default function CoursesPageContent() {
         {tab === "mine" ? (
           <div>
             <CourseList />
-            <div className="mt-6 text-center">
-              <button
-                onClick={() => { setTab("library"); setShowAICreator(true); }}
-                className="text-sm font-medium transition-all hover:opacity-70"
-                style={{ color: "var(--accent)" }}
-              >
-                + 新建课程
-              </button>
-            </div>
           </div>
         ) : (
           <div className="space-y-10">

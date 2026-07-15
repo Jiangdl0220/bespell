@@ -7,9 +7,9 @@ interface Course {
   id: string; title: string; scene: string;
 }
 
-export default function BattleCreate({ onCreated }: { onCreated: (code: string) => void }) {
+export default function BattleCreate({ onCreated, preselectedCourse }: { onCreated: (code: string) => void; preselectedCourse?: string }) {
   const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(preselectedCourse || "");
   const [maxPeeks, setMaxPeeks] = useState(5);
   const [creating, setCreating] = useState(false);
 
