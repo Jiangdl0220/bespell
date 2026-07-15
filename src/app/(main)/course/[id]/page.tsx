@@ -3,24 +3,23 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { usePracticeEngine, PracticeSentence, WordToken, isPunct } from "@/hooks/use-practice-engine";
+import { usePracticeEngine, PracticeSentence, WordToken } from "@/hooks/use-practice-engine";
 import { useDictationEngine } from "@/hooks/use-dictation-engine";
-import { useClozeEngine } from "@/hooks/use-cloze-engine";
 import PracticeHeader from "@/components/practice/header";
 import SentenceCard from "@/components/practice/sentence-card";
 import InputArea from "@/components/practice/input-area";
 import { speak } from "@/components/voice-selector";
 import RequireAuth from "@/components/require-auth";
 
-type PracticeMode = "spell" | "dictation" | "cloze";
+type PracticeMode = "spell" | "dictation";
 
-const MODE_LABELS: Record<PracticeMode, string> = { spell: "拼写", dictation: "听力", cloze: "填空" };
+const MODE_LABELS: Record<PracticeMode, string> = { spell: "拼写", dictation: "听力" };
 
 function getInitialMode(): PracticeMode {
   if (typeof window === "undefined") return "spell";
   const p = new URLSearchParams(window.location.search);
   const m = p.get("mode") as PracticeMode;
-  return m && ["spell", "dictation", "cloze"].includes(m) ? m : "spell";
+  return m && ["spell", "dictation"].includes(m) ? m : "spell";
 }
 
 function ModeTabs({ mode, onChange }: { mode: PracticeMode; onChange: (m: PracticeMode) => void }) {
@@ -82,52 +81,6 @@ function DictationArea({ engine, answerRevealed }: { engine: ReturnType<typeof u
   );
 }
 
-function ClozeArea({ engine }: { engine: ReturnType<typeof useClozeEngine> }) {
-  if (!engine.currentSentence) return null;
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-1 flex-wrap justify-center mb-4 text-base leading-relaxed min-h-[48px]">
-        {engine.currentWords.map((w, i) => {
-          const isBlank = engine.blanks.has(i);
-          const isDone = engine.submittedWords.some((sw) => sw.en === w.en);
-          const isCurrent = i === engine.blankIndices[engine.wordIndex];
-          if (isPunct(w)) return <span key={i} style={{ color: "var(--text)", opacity: 0.5 }}>{w.en}</span>;
-          if (!isBlank) return <span key={i} className="mx-0.5" style={{ color: "var(--text)" }}>{w.en}</span>;
-          if (isDone) return <span key={i} className="font-semibold mx-0.5" style={{ color: "var(--accent)" }}>{w.en}</span>;
-          return (
-            <span key={i} className="inline-block min-w-[48px] px-2 py-0.5 text-center rounded border-b-2 transition-all mx-0.5"
-              style={{
-                borderColor: isCurrent ? "var(--accent)" : "var(--border)",
-                background: isCurrent ? "var(--accent-bg)" : "transparent",
-                color: isCurrent ? "var(--accent)" : "var(--text3)",
-              }}>
-              {engine.hintVisible && isCurrent ? w.en : "___"}
-            </span>
-          );
-        })}
-      </div>
-      {engine.currentWord && (
-        <div className="flex items-center gap-3">
-          <input ref={engine.inputRef} value={engine.input} onChange={(e) => engine.setInput(e.target.value)}
-            onKeyDown={engine.handleKeyDown}
-            className="flex-1 rounded-xl px-4 py-3 text-base text-center font-semibold outline-none border transition-all"
-            style={{
-              background: "var(--card)", color: "var(--text)",
-              borderColor: engine.feedbackToken === "correct" ? "var(--accent)" : engine.feedbackToken === "error" ? "var(--red)" : "var(--border)",
-              fontFamily: "'Inter Tight', system-ui, sans-serif",
-              boxShadow: engine.feedbackToken === "correct" ? "0 0 0 3px rgba(45,138,78,.15)" : engine.feedbackToken === "error" ? "0 0 0 3px rgba(220,50,50,.1)" : "none",
-            }}
-            placeholder={`填写单词 (${engine.wordIndex + 1}/${engine.blankIndices.length})`}
-            autoFocus
-          />
-          <span className="text-xs shrink-0" style={{ color: "var(--text3)" }}>Tab 查看</span>
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function PracticePage({ params: paramsPromise }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [courseId, setCourseId] = useState<string | null>(null);
@@ -164,9 +117,6 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
   // ----- Dictation engine -----
   const dictationEngine = useDictationEngine(course?.sentences ?? []);
   const [dictAnswerRevealed, setDictAnswerRevealed] = useState(false);
-
-  // ----- Cloze engine -----
-  const clozeEngine = useClozeEngine(course?.sentences ?? []);
 
   // Auto-speak for dictation
   useEffect(() => {
@@ -211,9 +161,9 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
   }, []);
 
   const handleSpeak = useCallback(() => {
-    const en = mode === "spell" ? spellEngine.currentSentence?.en : clozeEngine.currentSentence?.en;
+    const en = spellEngine.currentSentence?.en;
     if (en) speak(en);
-  }, [mode, spellEngine.currentSentence, clozeEngine.currentSentence]);
+  }, [spellEngine.currentSentence]);
 
   const handleSaveWord = useCallback(() => {
     const word = spellEngine.currentWord;
@@ -222,9 +172,9 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
   }, [spellEngine.currentWord, courseId, course?.title, spellEngine.currentIndex, course?.sentences]);
 
   // Derived
-  const currentSentence = mode === "dictation" ? dictationEngine.currentSentence : mode === "cloze" ? clozeEngine.currentSentence : spellEngine.currentSentence;
-  const currentIndex = mode === "dictation" ? dictationEngine.currentIndex : mode === "cloze" ? clozeEngine.currentIndex : spellEngine.currentIndex;
-  const done = mode === "dictation" ? dictationEngine.done : mode === "cloze" ? clozeEngine.done : spellEngine.isComplete;
+  const currentSentence = mode === "dictation" ? dictationEngine.currentSentence : spellEngine.currentSentence;
+  const currentIndex = mode === "dictation" ? dictationEngine.currentIndex : spellEngine.currentIndex;
+  const done = mode === "dictation" ? dictationEngine.done : spellEngine.isComplete;
 
   if (loading) return <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}><div className="animate-pulse text-lg opacity-45">加载中...</div></div>;
   if (error || !course) return <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg)" }}><p style={{ color: "var(--red)" }}>{error || "课程不存在"}</p></div>;
@@ -265,7 +215,6 @@ export default function PracticePage({ params: paramsPromise }: { params: Promis
           )}
 
           {mode === "dictation" && <DictationArea engine={dictationEngine} answerRevealed={dictAnswerRevealed} />}
-          {mode === "cloze" && <ClozeArea engine={clozeEngine} />}
 
           {done && mode !== "spell" && (
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="card p-8 text-center">
