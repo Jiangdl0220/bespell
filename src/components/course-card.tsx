@@ -30,8 +30,29 @@ export default function CourseCard({ id, title, scene, difficulty, sentenceCount
 
   return (
     <Card3D className="cursor-pointer">
-      <div onClick={() => router.push(`/course/${id}`)} className="card p-5 relative">
-        <div className="flex items-start justify-between mb-4 pr-8">
+      <div
+        onClick={() => router.push(`/course/${id}`)}
+        className="card p-5 relative overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #ffffff 0%, #f8faf7 40%, #f0f5ee 100%)",
+        }}
+      >
+        {/* Subtle watermark — single large char */}
+        <span
+          className="absolute select-none pointer-events-none"
+          style={{
+            right: -8,
+            bottom: -12,
+            fontSize: 96,
+            fontFamily: "'Ma Shan Zheng', 'Noto Serif SC', serif",
+            color: "rgba(45,138,78,0.04)",
+            lineHeight: 1,
+          }}
+        >
+          补
+        </span>
+
+        <div className="flex items-start justify-between mb-4 pr-8 relative z-10">
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-base truncate group-hover/card:opacity-80 transition-opacity">{title}</h3>
             <p className="text-xs mt-0.5 truncate" style={{color:"var(--text2)"}}>{scene}</p>

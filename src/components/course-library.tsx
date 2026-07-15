@@ -150,11 +150,29 @@ export default function CourseLibrary() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
-                className="card p-4 cursor-pointer group transition-all hover:shadow-md hover:-translate-y-0.5"
+                className="card p-4 cursor-pointer group transition-all hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden"
                 onClick={() => handleSelect(course.id)}
-                style={{ opacity: selecting === course.id ? 0.5 : 1 }}
+                style={{
+                  opacity: selecting === course.id ? 0.5 : 1,
+                  background: "linear-gradient(135deg, #ffffff 0%, #f8faf7 40%, #f0f5ee 100%)",
+                }}
               >
-                <div className="flex items-center gap-2 mb-2.5">
+                {/* Watermark char */}
+                <span
+                  className="absolute select-none pointer-events-none"
+                  style={{
+                    right: -4,
+                    bottom: -8,
+                    fontSize: 72,
+                    fontFamily: "'Ma Shan Zheng', 'Noto Serif SC', serif",
+                    color: "rgba(45,138,78,0.035)",
+                    lineHeight: 1,
+                  }}
+                >
+                  补
+                </span>
+
+                <div className="flex items-center gap-2 mb-2.5 relative z-10">
                   <h3 className="font-bold text-sm truncate flex-1 min-w-0" style={{ color: "var(--text)" }}>{course.title}</h3>
                   <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded shrink-0"
                     style={{ background: "var(--accent-bg)", color: "var(--accent)" }}>
